@@ -15,6 +15,43 @@ body {
 }
 
 /* globals */
+.tables tbody tr:hover {
+    background-color: #5b7f8d;
+    color:#ffffff;
+}
+
+table{
+    width:100%;
+    border: none;
+}
+
+.tables th {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+.tables td {
+    height: 20px;
+    vertical-align:middle;
+    border-bottom: 1px solid #ddd;
+    border-left: none;
+  }
+
+.tables td a{
+    text-decoration: none;
+    color: lightseagreen;
+}
+
+.table-header{
+    display:block;
+    width:100%;
+    font-size: 20px;
+    font-weight: 300;
+    padding: 5px;
+    background-color: #888888;
+    color: #ffffff;
+}
 
 input {
     padding: 5px;
@@ -172,6 +209,132 @@ input {
 .register-box a:hover {
     color:#fff;
 }
+
+/* home.html */
+.bg-image{
+    background-image: url("../images/alex-reid-246078-unsplash.jpg") ;
+    background-size: cover;
+    background-position: center;
+}
+
+header{
+    color: #ffffff;
+    padding-top: 10px;
+    min-height: 50px;
+}
+
+header a{
+    color:#ffffff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+header ul{
+    margin:0;
+    padding: 0;
+}
+
+header li{
+    display: inline;
+    border:1px solid #fff;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+header #branding{
+    float: left;
+}
+
+header #branding h1{
+    margin:0;
+}
+
+header nav{
+    float:right;    
+    margin-top:-30px;
+}
+
+.highlight {
+    color:#3ECCB5;
+}
+
+header li:hover {
+    color:red;
+    opacity: 0.9;
+}
+
+.cards {
+    box-sizing: border-box;      
+    margin-top:5px; 
+    padding: 20px;   
+    min-height: 220px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.card1 {
+    float: left;
+    background-color:rgb(228, 58, 58);
+    width:40%;
+    height: 200px;
+    border-radius: 4px;
+    color:#ffffff;
+}
+
+.card2 {
+  float: right;
+  background-color:lightseagreen;
+  width:40%;
+  height: 200px;
+  border-radius: 4px;
+  color:#ffffff;
+}
+
+#total-flags{
+    width:50%;
+    margin:auto;
+}
+
+#card-label {
+    font-size: 14px;      
+}
+
+#card-value {
+  font-size: 30px;      
+}
+
+.tables {
+    background-color: rgb(250, 246, 246); 
+    padding: 20px;   
+    min-height: 220px;
+    width: 100%;
+  }
+
+  .table1 {
+    float: left;
+    width:48%;
+    min-height: 200px;
+  }
+
+  .table2 {
+    float: right;
+    width:48%;
+    min-height: 200px;
+  }
+
+  .button-add{
+    float: right;
+    height: 37px; 
+    width: 37px;   
+    margin-right:8px;        
+    background-image: url('../images/plus.png');
+    border:none;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+}
+
 
 
 
