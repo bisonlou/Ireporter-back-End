@@ -479,4 +479,17 @@ header li:hover {
         font-weight: 100;
     }
 
+    .delete-box {
+        width:40%;
+        padding-left: 300px;
+        margin-top: 100px;
+    }
+
+    .delete-box p{
+        font-size: 15px;
+        font-weight: 100;
+        color: crimson;
+        padding: 20px;
+        text-align: center;
+    }
  
