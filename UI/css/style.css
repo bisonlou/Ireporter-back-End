@@ -21,7 +21,10 @@ input {
     margin: 5px 0 5px 0;
   }
   
-
+  hr {
+    border: 1px solid rgb(12, 148, 148);
+    
+  }
 /* login  */
 #login-bg {       
     background-image: url("../images/alex-reid-246078-unsplash.jpg") ;
@@ -50,8 +53,8 @@ input {
 }
 
 .login-box p {
-    margin:0;
-    padding: 0;   
+    margin:0px;
+    padding: 0px;   
     font-size:16px;
     font-weight: 100;
 }
@@ -99,5 +102,77 @@ input {
 .login-box a:hover {
     color:#fff;
 }
+
+/* register */
+
+.register-box {
+    margin-top: 10px;
+    margin-left: 250px;
+    padding:40px 20px;    
+    background:#000;    
+    opacity: 0.7;
+    width:40%;
+    color:#fff;    
+}
+.register-box h1 {
+    margin:0px;
+    padding: 0px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.register-box p {
+    margin:0px;
+    padding: 0px;   
+    font-size:14px;
+    font-weight: 100;
+}
+
+.register-box input {
+    width:100%; 
+    margin-bottom: 20px;
+    outline:none;
+    border:none;
+    border-bottom: 1px solid #000000;
+}
+
+.register-box input[type=email],
+ .register-box input[type="password"] 
+ {
+    border:none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+    height: 40px;
+    font-size: 14px;
+    color:#fff;
+}
+
+.register-box input[type=submit] {
+    border: none;
+    outline:none;
+    border-radius: 22px;
+    color:#fff;
+    background: rgb(22, 119, 103);
+    font-size: 18px;
+}
+
+.register-box input[type=submit]:hover {
+    cursor: pointer;
+}
+
+.register-box a {
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgray;
+}
+
+.register-box a:hover {
+    color:#fff;
+}
+
+
 
  
