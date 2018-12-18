@@ -1,0 +1,103 @@
+/* global */
+body {
+    font-family: sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width:80%;
+    margin:auto;
+    overflow: hidden;
+}
+
+/* globals */
+
+input {
+    padding: 5px;
+    margin: 5px 0 5px 0;
+  }
+  
+
+/* login  */
+#login-bg {       
+    background-image: url("../images/alex-reid-246078-unsplash.jpg") ;
+    background-size: cover;
+    background-position: center;
+}
+
+.login-box {
+    float:right;
+    margin-top: 100px;
+    padding:40px 20px;    
+    background:#000;    
+    opacity: 0.7;
+    width:280px;
+    height:320px;
+    color:#fff;    
+}
+
+
+.login-box h1 {
+    margin:0;
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 40px;
+}
+
+.login-box p {
+    margin:0;
+    padding: 0;   
+    font-size:16px;
+    font-weight: 100;
+}
+
+.login-box input {
+    width:100%; 
+    margin-bottom: 20px;
+    outline:none;
+    border:none;
+    border-bottom: 1px solid #000000;
+}
+
+.login-box input[type=email],
+ .login-box input[type="password"] 
+ {
+    border:none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+    height: 40px;
+    font-size: 14px;
+    color:#fff;
+}
+
+.login-box input[type=submit] {
+    border: none;
+    outline:none;
+    border-radius: 22px;
+    color:#fff;
+    background: rgb(22, 119, 103);
+    font-size: 18px;
+}
+
+.login-box input[type=submit]:hover {
+    cursor: pointer;
+}
+
+.login-box a {
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgray;
+}
+
+.login-box a:hover {
+    color:#fff;
+}
+
+ 
