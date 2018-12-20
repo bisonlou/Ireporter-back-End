@@ -1,32 +1,11 @@
+from flask import Flask
 from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
-import run
+import models
 
 app = Flask(__name__)
-
-
-red_flags = [
-    {       
-            'id': 1,
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'description': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        },
-    {
-            'id': 2,
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'description': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-]
 
 
 @app.route('/', methods=['GET'])
@@ -37,24 +16,35 @@ def index():
 @app.route('/api/v1/redflag', methods=['POST'])
 def add_red_flag():
 
-    data = request.get_json()
-    date = data.get('date')
-    offender = data.get('offender')
-    description = data.get('description')
-    location = data.get('location')
-    image = data.get('image')
-    video = data.get('video')
+    if not request.json:
+        abort(400)
+    if 'date' not in request.json:
+        abort(400)
+    if 'offender' not in request.json:
+        abort(400)
+    if 'description' not in request.json:
+        abort(400)  
 
-    if 'offender' not in data:
-        return jsonify({'Error': error}), 400
-    if 'location' not in data:
-        return jsonify({'Error': error}), 400
-    if 'description' not in data:
-        return jsonify({'Error': error}), 400
+    red_flag = {
+            'id':  models.get_current_id() + 1,
+            'date': request.json['date'],
+            'offender': request.json['offender'],
+            'description': request.json['description']
+            }
+    success_response = {
+        'id': models.get_current_id() + 1,
+        'message': 'Created red-flag record'
+    }
 
-    return jsonify({'message': [data]}), 201
+    models.add_red_flag(red_flag)
+    return jsonify({'status': 201, 'data': [success_response]})
 
 
-@app.route('/api/v1/redflags', methods=['GET'])
-def get_red_flags():
-    return jsonify({'Redflags': [red_flags]})
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'Error': 'Not found'}, 404))
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'error': 'Bad Request'}), 400

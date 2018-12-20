@@ -1,7 +1,7 @@
 import unittest
 import json
 import models
-from run import app
+from routes import app
 
 
 class TestRoutes(unittest.TestCase):
