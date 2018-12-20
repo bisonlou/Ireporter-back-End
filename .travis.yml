@@ -11,7 +11,7 @@ install:
 
 
 script:
-  - pytest -p no:warnings
+  - pytest
   
 after_success:
   - coveralls
