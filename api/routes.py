@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
-import api.models
+import models
 
 app = Flask(__name__)
 
