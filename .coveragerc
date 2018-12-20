@@ -5,6 +5,7 @@ omit =
     */__pycache__/*
     *.pyc
     */venv/*
+    */home/travis/virtualenv/*
     */usr/lib/python3/*
     db.py
     */__init__.py
