@@ -1,0 +1,12 @@
+[report]
+omit =
+    */python?.?/*
+    */site-packages/nose/*
+    */__pycache__/*
+    *.pyc
+    */venv/*
+    */usr/lib/python3/*
+    db.py
+    */__init__.py
+    tests/*
+    */models.py
