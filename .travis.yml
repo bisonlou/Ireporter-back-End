@@ -9,7 +9,7 @@ install:
 
 
 script:
-  - python -m pytest --cov
+  - pytest -p no:warnings --cov
   
 after_success:
   - coveralls
