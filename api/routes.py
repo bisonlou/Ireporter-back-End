@@ -3,9 +3,24 @@ from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
-import models
 
 app = Flask(__name__)
+
+red_flags = []
+
+
+def add_red_flag(red_flag):
+    red_flags.append(red_flag)
+
+
+def get_current_id():
+    if len(red_flags) == 0:
+        return 0        
+    return red_flags[-1]['id']
+    
+
+def get_all_red_flags():
+    return red_flags
 
 
 @app.route('/', methods=['GET'])
@@ -26,18 +41,26 @@ def add_red_flag():
         abort(400)  
 
     red_flag = {
-            'id':  models.get_current_id() + 1,
+            'id':  get_current_id() + 1,
             'date': request.json['date'],
             'offender': request.json['offender'],
             'description': request.json['description']
             }
+            
     success_response = {
-        'id': models.get_current_id() + 1,
+        'id': get_current_id() + 1,
         'message': 'Created red-flag record'
     }
 
-    models.add_red_flag(red_flag)
+    red_flags.append(red_flag)
     return jsonify({'status': 201, 'data': [success_response]})
+
+
+@app.route('/api/v1/redflags', methods=['GET'])
+def get_red_flags():    
+
+    return jsonify({'status': 200, 'data': [red_flags]})
+
 
 
 @app.errorhandler(404)
