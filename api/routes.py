@@ -47,9 +47,10 @@ def index():
 @app.route('/api/v1/redflag', methods=['POST'])
 def add_red_flag():
     validate_post_red_flag()
+    flag_id = get_current_id() + 1
     
     red_flag = {
-            'id':  get_current_id() + 1,
+            'id': flag_id,
             'date': request.json['date'],
             'offender': request.json['offender'],
             'location': request.json['location'],
@@ -59,7 +60,7 @@ def add_red_flag():
             }
             
     success_response = {
-        'id': get_current_id() + 1,
+        'id': flag_id,
         'message': 'Created red-flag record'
     }
 
@@ -91,27 +92,12 @@ def alter_red_flag(flag_id):
     
     if len(red_flag) == 0:
         abort(404)
-    if 'offender' not in request.json:
-        abort(400)
-    if 'location' not in request.json:
-        abort(400)
-    if 'image' not in request.json:
-        abort(400)
-    if 'video' not in request.json:
-        abort(400)
-    if 'date' not in request.json:
-        abort(400)
-    if 'comment' not in request.json:
-        abort(400)
     if not request.json:
         abort(404)
 
-    red_flag[0]['offender'] = request.json.get('offender', red_flag[0]['offender'])
-    red_flag[0]['location'] = request.json.get('location', red_flag[0]['location'])      
-    red_flag[0]['image'] = request.json.get('image', red_flag[0]['image'])
-    red_flag[0]['video'] = request.json.get('video', red_flag[0]['video'])      
-    red_flag[0]['date'] = request.json.get('date', red_flag[0]['date'])
-    red_flag[0]['comment'] = request.json.get('comment', red_flag[0]['comment'])      
+    key_list = ['offender', 'location', 'image', 'video', 'date', 'comment']
+    for key in key_list:        
+        red_flag[0][key] = request.json.get(key, red_flag[0][key])     
 
     return jsonify({'status': 200, 'data': [red_flag[0]]})
 
