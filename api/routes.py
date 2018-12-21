@@ -37,14 +37,17 @@ def add_red_flag():
         abort(400)
     if 'offender' not in request.json:
         abort(400)
-    if 'description' not in request.json:
+    if 'comment' not in request.json:
         abort(400)  
 
     red_flag = {
             'id':  get_current_id() + 1,
             'date': request.json['date'],
             'offender': request.json['offender'],
-            'description': request.json['description']
+            'location': request.json['location'],
+            'comment': request.json['comment'],
+            'image': request.json['image'],
+            'video': request.json['video']
             }
             
     success_response = {
@@ -57,10 +60,38 @@ def add_red_flag():
 
 
 @app.route('/api/v1/redflags', methods=['GET'])
-def get_red_flags():    
+def get_red_flags():
 
     return jsonify({'status': 200, 'data': [red_flags]})
 
+
+@app.route('/api/v1/redflag/<int:flag_id>/<string:resource>', methods=['PATCH'])
+def update_red_flag(flag_id, resource):
+
+    if not int(flag_id):
+        abort(400)
+    if len(resource) == 0:
+        abort(400)
+
+    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+
+    if len(red_flags[0]) == 0:
+        abort(404)
+
+    message = ""
+    if type(eval(resource)) is tuple:       
+        red_flag[0]['location'] = resource
+        message = 'Updated red-flag record’s location'
+    else:
+        red_flag[0]['comment'] = str(resource).replace("'", "")
+        message = 'Updated red-flag record’s comment'    
+    
+    success_response = {
+        'id': red_flag[0]['id'],
+        'message': message
+        }
+
+    return jsonify({'status': 200, 'data': [success_response]})
 
 
 @app.errorhandler(404)
