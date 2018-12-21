@@ -148,3 +148,72 @@ class TestRoutes(unittest.TestCase):
             'Updated red-flag record’s comment')
         self.assertEqual((message['data'][0]['id']), 1)
         self.assertEquals(red_flags[0]['comment'], 'Took a bribe')
+
+    def test_delete_red_flag(self):
+        """
+        Test deleting a red flag
+        """
+        red_flag1 = {
+            'date': '2018-12-24',
+            'offender': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        red_flag2 = {
+            'date': '2018-10-24',
+            'offender': 'Magistrate',
+            'comment': 'Was bribed',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        red_flag3 = {
+            'date': '2017-12-24',
+            'offender': 'KCCA Surveyer',
+            'comment': 'Was bribed',
+            'location': '(-15.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+        
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag1)
+        )
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag2)
+        )
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag3)
+        )
+
+        response = self.test_client.delete('/api/v1/redflag/1')
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertTrue(len(red_flags) == 2)
+        self.assertEqual(
+            (message['data'][0]['message']),
+            'red-flag record has been deleted')
+        self.assertEqual((message['data'][0]['id']), 1)
+
+        response = self.test_client.delete('/api/v1/redflag/2')
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertTrue(len(red_flags) == 1)
+        self.assertEqual(
+            (message['data'][0]['message']),
+            'red-flag record has been deleted')
+        self.assertEqual((message['data'][0]['id']), 2)

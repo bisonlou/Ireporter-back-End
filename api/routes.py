@@ -94,6 +94,28 @@ def update_red_flag(flag_id, resource):
     return jsonify({'status': 200, 'data': [success_response]})
 
 
+@app.route('/api/v1/redflag/<int:flag_id>', methods=['DELETE'])
+def delete_red_flag(flag_id):
+
+    if not int(flag_id):
+        abort(400)
+
+    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+
+    if len(red_flags[0]) == 0:
+        abort(404)
+
+    red_flags.remove(red_flag[0])  
+    
+    success_response = {
+        'id': red_flag[0]['id'],
+        'message': 'red-flag record has been deleted'
+        }
+
+    return jsonify({'status': 200, 'data': [success_response]})
+
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'Error': 'Not found'}, 404))
