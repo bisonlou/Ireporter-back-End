@@ -143,37 +143,31 @@ class TestRoutes(unittest.TestCase):
         """
         self.post_red_flags()
 
-        response = self.test_client.patch(
+        location_patch = self.test_client.patch(
             '/api/v1/redflag/1/(0.000000, 0.000000)')
-
-        message = json.loads(response.data)
-
-        self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 2)
-        self.assertEqual(
-            (message['data'][0]['message']),
-            'Updated red-flag record’s location')
-        self.assertEqual((message['data'][0]['id']), 1)
-        self.assertEquals(red_flags[0]['location'], '(0.000000, 0.000000)')
-
-    def test_update_red_flags_comment(self):
-        """
-        Test updateing a redflags comment
-        """
-        self.post_red_flags()
-        response = self.test_client.patch(
+        comment_patch = self.test_client.patch(
             "/api/v1/redflag/1/'Took a bribe'")
 
-        message = json.loads(response.data)
+        location_dict = json.loads(location_patch.data)
+        comment_dict = json.loads(comment_patch.data)
 
-        self.assertEqual(message['status'], 200)
+        self.assertEqual(location_dict['status'], 200)
+        self.assertEqual(comment_dict['status'], 200)        
         self.assertTrue(len(red_flags) == 2)
-        self.assertEqual(
-            (message['data'][0]['message']),
-            'Updated red-flag record’s comment')
-        self.assertEqual((message['data'][0]['id']), 1)
-        self.assertEquals(red_flags[0]['comment'], 'Took a bribe')
 
+        self.assertEqual(
+            (location_dict['data'][0]['message']),
+            'Updated red-flag record’s location')
+        self.assertEqual(
+            (comment_dict['data'][0]['message']),
+            'Updated red-flag record’s comment')
+
+        self.assertEqual((comment_dict['data'][0]['id']), 1)
+        self.assertEqual((location_dict['data'][0]['id']), 1)
+
+        self.assertEquals(red_flags[0]['location'], '(0.000000, 0.000000)')
+        self.assertEquals(red_flags[0]['comment'], 'Took a bribe')
+    
     def test_delete_red_flag(self):
         """
         Test deleting a red flag
