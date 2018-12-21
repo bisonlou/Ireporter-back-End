@@ -9,29 +9,20 @@ app = Flask(__name__)
 red_flags = []
 
 
-def add_red_flag(red_flag):
-    red_flags.append(red_flag)
-
-
 def get_current_id():
     if len(red_flags) == 0:
         return 0        
     return red_flags[-1]['id']
-    
-
-def get_all_red_flags():
-    return red_flags
 
 
 def validate_post_red_flag():
     if not request.json:
         abort(400)
-    if 'date' not in request.json:
-        abort(400)
-    if 'offender' not in request.json:
-        abort(400)
-    if 'comment' not in request.json:
-        abort(400)  
+
+    key_list = ['date', 'offender', 'comment']
+    for key in key_list:
+        if key not in request.json:
+            abort(400) 
 
 
 def get_red_flag_from_list(flag_id):
@@ -76,10 +67,9 @@ def get_red_flags():
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['GET'])
 def get_red_flag(flag_id):
-    if not int(flag_id):
-        abort(400)
 
     red_flag = get_red_flag_from_list(flag_id)
+
     if len(red_flag) == 0:
         abort(404)       
 
@@ -89,11 +79,11 @@ def get_red_flag(flag_id):
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['PUT'])
 def alter_red_flag(flag_id):
     red_flag = get_red_flag_from_list(flag_id)
-    
+
     if len(red_flag) == 0:
         abort(404)
     if not request.json:
-        abort(404)
+        abort(400)
 
     key_list = ['offender', 'location', 'image', 'video', 'date', 'comment']
     for key in key_list:        
@@ -155,9 +145,9 @@ def delete_red_flag(flag_id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'Error': 'Not found'}, 404))
+    return jsonify({'status': 404, 'error': 'Not Found'})
 
 
 @app.errorhandler(400)
 def bad_request(error):
-    return jsonify({'error': 'Bad Request'}), 400
+    return jsonify({'status': 400, 'error': 'Bad Request'})
