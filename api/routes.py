@@ -65,6 +65,19 @@ def get_red_flags():
     return jsonify({'status': 200, 'data': [red_flags]})
 
 
+@app.route('/api/v1/redflag/<int:flag_id>', methods=['GET'])
+def get_red_flag(flag_id):
+    if not int(flag_id):
+        abort(400)
+
+    red_flag = [red_flag for red_flag in
+                red_flags if red_flag['id'] == flag_id]
+    if len(red_flag) == 0:
+        abort(404)       
+
+    return jsonify({'status': 200, 'data': [red_flag[0]]})
+
+
 @app.route('/api/v1/redflag/<int:flag_id>/<string:resource>', methods=['PATCH'])
 def update_red_flag(flag_id, resource):
 
@@ -73,7 +86,8 @@ def update_red_flag(flag_id, resource):
     if len(resource) == 0:
         abort(400)
 
-    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+    red_flag = [red_flag for red_flag in
+                red_flags if red_flag['id'] == flag_id]
 
     if len(red_flags[0]) == 0:
         abort(404)
@@ -100,7 +114,8 @@ def delete_red_flag(flag_id):
     if not int(flag_id):
         abort(400)
 
-    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+    red_flag = [red_flag for red_flag in
+                red_flags if red_flag['id'] == flag_id]
 
     if len(red_flags[0]) == 0:
         abort(404)

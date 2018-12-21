@@ -85,6 +85,50 @@ class TestRoutes(unittest.TestCase):
         self.assertTrue(len(red_flags) > 0)
         self.assertTrue(len(red_flags) == 2)    
 
+    def test_get_red_flag(self):
+        """
+        Test getting all red flags
+        """
+        red_flag1 = {
+            'date': '2018-12-24',
+            'offender': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        red_flag2 = {
+            'date': '2018-12-12',
+            'offender': 'Magistrate',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag1)
+        )
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag2)
+        )
+
+        response = self.test_client.get(
+            '/api/v1/redflag/1')
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(message['data'][0]['id'], 1)   
+        self.assertEqual(message['data'][0]['offender'], 'Police Officer')   
+        self.assertEqual(len(message['data']), 1)
+
     def test_update_red_flags_location(self):
         """
         Test updateing a redflags location
