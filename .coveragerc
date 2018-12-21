@@ -11,5 +11,4 @@ omit =
     */__init__.py
     tests/*
     */models.py
-    api/run.py
     \Users\Bison\AppData\*
