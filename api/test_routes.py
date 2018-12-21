@@ -16,6 +16,40 @@ class TestRoutes(unittest.TestCase):
         teardown test client
         """
         red_flags.clear()    
+    
+    def post_red_flags(self):
+        """
+        Function to post sample red flags to list
+        """
+        red_flag1 = {
+            'date': '2018-12-24',
+            'offender': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        red_flag2 = {
+            'date': '2018-12-12',
+            'offender': 'Magistrate',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag1)
+        )
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag2)
+        )
         
     def test_add_red_flag(self):
         """
@@ -40,92 +74,33 @@ class TestRoutes(unittest.TestCase):
         print(message['data'][0]['message'])
         self.assertEqual(message['status'], 201)  
         self.assertEqual(message['data'][0]['message'], 'Created red-flag record')  
-        self.assertTrue(len(red_flags) > 0)
+        self.assertTrue(len(red_flags) == 1)
 
     def test_get_all_red_flags(self):
         """
         Test getting all red flags
         """
-        red_flag1 = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        red_flag2 = {
-            'date': '2018-12-12',
-            'offender': 'Magistrate',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag1)
-        )
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag2)
-        )
-
+        self.post_red_flags()
         response = self.test_client.get(
             '/api/v1/redflags')
-
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) > 0)
         self.assertTrue(len(red_flags) == 2)    
 
     def test_get_red_flag(self):
         """
         Test getting all red flags
         """
-        red_flag_1 = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        red_flag_2 = {
-            'date': '2018-12-12',
-            'offender': 'Magistrate',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag_1)
-        )
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag_2)
-        )
-
+        
+        self.post_red_flags()
         response = self.test_client.get(
             '/api/v1/redflag/1')
 
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertEqual(message['data'][0]['id'], 1)   
+        self.assertEqual(message['data'][0]['id'], 1)
         self.assertEqual(message['data'][0]['offender'], 'Police Officer')   
         self.assertEqual(len(message['data']), 1)
 
@@ -133,14 +108,7 @@ class TestRoutes(unittest.TestCase):
         """
         Test getting all red flags
         """
-        red_flag_1 = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
+        self.post_red_flags()
 
         red_flag_2 = {            
             "comment": "Police officer at CPS Badge #123",
@@ -150,12 +118,6 @@ class TestRoutes(unittest.TestCase):
             "offender": "Police Officer #123",
             "video": "mov_00001.mp4"
         }
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag_1)
-        )
 
         response = self.test_client.put(
             '/api/v1/redflag/1',
@@ -173,26 +135,13 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['video'], 'mov_00001.mp4')   
         self.assertEqual(message['data'][0]['comment'], 'Police officer at CPS Badge #123')   
         self.assertEqual(len(message['data']), 1)
-        self.assertEqual(len(red_flags), 1)
+        self.assertEqual(len(red_flags), 2)
 
     def test_update_red_flags_location(self):
         """
-        Test updateing a redflags location
+        Test updating a redflags location
         """
-        red_flag = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-        
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag)
-        )
+        self.post_red_flags()
 
         response = self.test_client.patch(
             '/api/v1/redflag/1/(0.000000, 0.000000)')
@@ -200,7 +149,7 @@ class TestRoutes(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 1)
+        self.assertTrue(len(red_flags) == 2)
         self.assertEqual(
             (message['data'][0]['message']),
             'Updated red-flag record’s location')
@@ -211,28 +160,14 @@ class TestRoutes(unittest.TestCase):
         """
         Test updateing a redflags comment
         """
-        red_flag = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-        
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag)
-        )
-
+        self.post_red_flags()
         response = self.test_client.patch(
             "/api/v1/redflag/1/'Took a bribe'")
 
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 1)
+        self.assertTrue(len(red_flags) == 2)
         self.assertEqual(
             (message['data'][0]['message']),
             'Updated red-flag record’s comment')
@@ -243,56 +178,13 @@ class TestRoutes(unittest.TestCase):
         """
         Test deleting a red flag
         """
-        red_flag1 = {
-            'date': '2018-12-24',
-            'offender': 'Police Officer',
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        red_flag2 = {
-            'date': '2018-10-24',
-            'offender': 'Magistrate',
-            'comment': 'Was bribed',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        red_flag3 = {
-            'date': '2017-12-24',
-            'offender': 'KCCA Surveyer',
-            'comment': 'Was bribed',
-            'location': '(-15.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-        
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag1)
-        )
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag2)
-        )
-
-        self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(red_flag3)
-        )
+        self.post_red_flags()
 
         response = self.test_client.delete('/api/v1/redflag/1')
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 2)
+        self.assertTrue(len(red_flags) == 1)
         self.assertEqual(
             (message['data'][0]['message']),
             'red-flag record has been deleted')
@@ -302,7 +194,7 @@ class TestRoutes(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 1)
+        self.assertTrue(len(red_flags) == 0)
         self.assertEqual(
             (message['data'][0]['message']),
             'red-flag record has been deleted')

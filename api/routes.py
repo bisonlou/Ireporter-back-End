@@ -23,14 +23,7 @@ def get_all_red_flags():
     return red_flags
 
 
-@app.route('/', methods=['GET'])
-def index():
-    return jsonify({'message': 'Hello world'})
-
-
-@app.route('/api/v1/redflag', methods=['POST'])
-def add_red_flag():
-
+def validate_post_red_flag():
     if not request.json:
         abort(400)
     if 'date' not in request.json:
@@ -40,6 +33,21 @@ def add_red_flag():
     if 'comment' not in request.json:
         abort(400)  
 
+
+def get_red_flag_from_list(flag_id):
+    return [red_flag for red_flag in
+            red_flags if red_flag['id'] == flag_id]
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({'message': 'Hello world'})
+
+
+@app.route('/api/v1/redflag', methods=['POST'])
+def add_red_flag():
+    validate_post_red_flag()
+    
     red_flag = {
             'id':  get_current_id() + 1,
             'date': request.json['date'],
@@ -70,8 +78,7 @@ def get_red_flag(flag_id):
     if not int(flag_id):
         abort(400)
 
-    red_flag = [red_flag for red_flag in
-                red_flags if red_flag['id'] == flag_id]
+    red_flag = get_red_flag_from_list(flag_id)
     if len(red_flag) == 0:
         abort(404)       
 
@@ -80,7 +87,7 @@ def get_red_flag(flag_id):
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['PUT'])
 def alter_red_flag(flag_id):
-    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+    red_flag = get_red_flag_from_list(flag_id)
     
     if len(red_flag) == 0:
         abort(404)
@@ -117,8 +124,7 @@ def update_red_flag(flag_id, resource):
     if len(resource) == 0:
         abort(400)
 
-    red_flag = [red_flag for red_flag in
-                red_flags if red_flag['id'] == flag_id]
+    red_flag = get_red_flag_from_list(flag_id)
 
     if len(red_flags[0]) == 0:
         abort(404)
@@ -145,8 +151,7 @@ def delete_red_flag(flag_id):
     if not int(flag_id):
         abort(400)
 
-    red_flag = [red_flag for red_flag in
-                red_flags if red_flag['id'] == flag_id]
+    red_flag = get_red_flag_from_list(flag_id)
 
     if len(red_flags[0]) == 0:
         abort(404)
