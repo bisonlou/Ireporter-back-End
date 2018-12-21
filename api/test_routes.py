@@ -89,7 +89,7 @@ class TestRoutes(unittest.TestCase):
         """
         Test getting all red flags
         """
-        red_flag1 = {
+        red_flag_1 = {
             'date': '2018-12-24',
             'offender': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
@@ -98,7 +98,7 @@ class TestRoutes(unittest.TestCase):
             'video': 'mov_0987.mp4'
         }
 
-        red_flag2 = {
+        red_flag_2 = {
             'date': '2018-12-12',
             'offender': 'Magistrate',
             'comment': 'Police officer at CPS Badge #162',
@@ -110,13 +110,13 @@ class TestRoutes(unittest.TestCase):
         self.test_client.post(
             '/api/v1/redflag',
             content_type='application/json',
-            data=json.dumps(red_flag1)
+            data=json.dumps(red_flag_1)
         )
 
         self.test_client.post(
             '/api/v1/redflag',
             content_type='application/json',
-            data=json.dumps(red_flag2)
+            data=json.dumps(red_flag_2)
         )
 
         response = self.test_client.get(
@@ -128,6 +128,52 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['id'], 1)   
         self.assertEqual(message['data'][0]['offender'], 'Police Officer')   
         self.assertEqual(len(message['data']), 1)
+
+    def test_alter_entire_red_flag(self):
+        """
+        Test getting all red flags
+        """
+        red_flag_1 = {
+            'date': '2018-12-24',
+            'offender': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4'
+        }
+
+        red_flag_2 = {            
+            "comment": "Police officer at CPS Badge #123",
+            "date": "2018-01-01",
+            "image": "photo_0001.jpg",
+            "location": "(0.00000, 0.0000)",
+            "offender": "Police Officer #123",
+            "video": "mov_00001.mp4"
+        }
+
+        self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag_1)
+        )
+
+        response = self.test_client.put(
+            '/api/v1/redflag/1',
+            content_type='application/json',
+            data=json.dumps(red_flag_2)
+        )
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(message['data'][0]['id'], 1)   
+        self.assertEqual(message['data'][0]['offender'], 'Police Officer #123')   
+        self.assertEqual(message['data'][0]['date'], '2018-01-01')   
+        self.assertEqual(message['data'][0]['image'], 'photo_0001.jpg')   
+        self.assertEqual(message['data'][0]['location'], '(0.00000, 0.0000)')   
+        self.assertEqual(message['data'][0]['video'], 'mov_00001.mp4')   
+        self.assertEqual(message['data'][0]['comment'], 'Police officer at CPS Badge #123')   
+        self.assertEqual(len(message['data']), 1)
+        self.assertEqual(len(red_flags), 1)
 
     def test_update_red_flags_location(self):
         """

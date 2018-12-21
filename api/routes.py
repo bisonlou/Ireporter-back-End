@@ -78,6 +78,37 @@ def get_red_flag(flag_id):
     return jsonify({'status': 200, 'data': [red_flag[0]]})
 
 
+@app.route('/api/v1/redflag/<int:flag_id>', methods=['PUT'])
+def alter_red_flag(flag_id):
+    red_flag = [red_flag for red_flag in red_flags if red_flag['id'] == flag_id]
+    
+    if len(red_flag) == 0:
+        abort(404)
+    if 'offender' not in request.json:
+        abort(400)
+    if 'location' not in request.json:
+        abort(400)
+    if 'image' not in request.json:
+        abort(400)
+    if 'video' not in request.json:
+        abort(400)
+    if 'date' not in request.json:
+        abort(400)
+    if 'comment' not in request.json:
+        abort(400)
+    if not request.json:
+        abort(404)
+
+    red_flag[0]['offender'] = request.json.get('offender', red_flag[0]['offender'])
+    red_flag[0]['location'] = request.json.get('location', red_flag[0]['location'])      
+    red_flag[0]['image'] = request.json.get('image', red_flag[0]['image'])
+    red_flag[0]['video'] = request.json.get('video', red_flag[0]['video'])      
+    red_flag[0]['date'] = request.json.get('date', red_flag[0]['date'])
+    red_flag[0]['comment'] = request.json.get('comment', red_flag[0]['comment'])      
+
+    return jsonify({'status': 200, 'data': [red_flag[0]]})
+
+
 @app.route('/api/v1/redflag/<int:flag_id>/<string:resource>', methods=['PATCH'])
 def update_red_flag(flag_id, resource):
 
