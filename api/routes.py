@@ -126,7 +126,8 @@ def delete_red_flag(flag_id):
 
     if not int(flag_id):
         abort(400)
-
+    
+    #get redflag matching id passed
     red_flag = get_red_flag_from_list(flag_id)
 
     if len(red_flags[0]) == 0:
@@ -145,9 +146,9 @@ def delete_red_flag(flag_id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return jsonify({'status': 404, 'error': 'Not Found'})
+    return jsonify({'status': 404, 'error': 'Not Found'}), 404
 
 
 @app.errorhandler(400)
 def bad_request(error):
-    return jsonify({'status': 400, 'error': 'Bad Request'})
+    return jsonify({'status': 400, 'error': 'Bad Request'}), 400

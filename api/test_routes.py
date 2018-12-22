@@ -51,7 +51,7 @@ class TestRoutes(unittest.TestCase):
             data=json.dumps(red_flag_2)
         )
         
-    def test_add_red_flag(self):
+    def test_add_proper_red_flag(self):
         """
         Test adding a red flag with expected details
         """
@@ -64,6 +64,24 @@ class TestRoutes(unittest.TestCase):
             'video': 'mov_0987.mp4'
         }
 
+        proper_post_response = self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(proper_red_flag)
+        )
+        
+        proper_post_message = json.loads(proper_post_response.data)
+        bad_post_message = json.loads(bad_post_response.data)
+        
+        self.assertEqual(proper_post_message['status'], 201)  
+        self.assertEqual(proper_post_message['data'][0]['message'], 'Created red-flag record') 
+
+        
+    def test_add_bad_red_flag(self):
+        """
+        Test adding a red flag with expected details
+        """
+        
         bad_red_flag = {
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
@@ -71,24 +89,12 @@ class TestRoutes(unittest.TestCase):
             'video': 'mov_0987.mp4'
         }
 
-        proper_post_response = self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(proper_red_flag)
-        )
-
         bad_post_response = self.test_client.post(
             '/api/v1/redflag',
             content_type='application/json',
             data=json.dumps(bad_red_flag)
         )
-
-        proper_post_message = json.loads(proper_post_response.data)
-        bad_post_message = json.loads(bad_post_response.data)
         
-        self.assertEqual(proper_post_message['status'], 201)  
-        self.assertEqual(proper_post_message['data'][0]['message'], 'Created red-flag record') 
-
         self.assertEqual(bad_post_message['status'], 400)  
         self.assertEqual(bad_post_message['error'], 'Bad Request') 
         self.assertTrue(len(red_flags) == 1)
