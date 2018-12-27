@@ -7,8 +7,8 @@ omit =
     */venv/*
     */home/travis/virtualenv/*
     */usr/lib/python3/*
-    db.py
     */__init__.py
     tests/*
     */models.py
+    test_routes.py
     \Users\Bison\AppData\*
