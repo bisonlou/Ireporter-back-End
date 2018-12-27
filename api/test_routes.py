@@ -178,91 +178,91 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['status'], 400)
         self.assertEqual(message['error'], 'Bad Request')
     
-    # def test_update_red_flags_location(self):
-    #     """
-    #     Test updating a redflags location
-    #     """
-    #     self.post_red_flags()
-    #     red_flag_update = {            
-    #         "comment": "Police officer at CPS Badge #123",
-    #         "date": "2018-01-01",
-    #         "image": "photo_0001.jpg",
-    #         "location": "(0.00000, 0.0000)",
-    #         "title": "Police Officer #123",
-    #         "video": "mov_00001.mp4",
-    #         "user_id": 1
-    #     }
+    def test_update_red_flags_location(self):
+        """
+        Test updating a redflags location
+        """
+        self.post_red_flags()
+        red_flag_update = {            
+            "comment": "Police officer at CPS Badge #123",
+            "date": "2018-01-01",
+            "image": "photo_0001.jpg",
+            "location": "(0.00000, 0.0000)",
+            "title": "Police Officer #123",
+            "video": "mov_00001.mp4",
+            "user_id": 1
+        }
 
-    #     location_patch = self.test_client.patch(
-    #         '/api/v1/redflag/1/location',
-    #         content_type='application/json',
-    #         data=json.dumps(red_flag_update))
-    #     location_dict = json.loads(location_patch.data)
+        location_patch = self.test_client.patch(
+            '/api/v1/redflag/1/location',
+            content_type='application/json',
+            data=json.dumps(red_flag_update))
+        location_dict = json.loads(location_patch.data)
 
-    #     self.assertEqual(location_dict['status'], 200)
-    #     self.assertEqual(RedFlags.count(), 2)
-    #     self.assertEqual(
-    #         (location_dict['data'][0]['message']),
-    #         'Updated red-flag record’s location')
-    #     print(RedFlags.get_red_flag(1))
-    #     self.assertEquals(RedFlags.get_red_flag(1)[0]['location'], '(0.00000, 0.0000)')
+        self.assertEqual(location_dict['status'], 200)
+        self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(
+            (location_dict['data'][0]['message']),
+            'Updated red-flag record’s location')
+        print(RedFlags.get_red_flag(1))
+        self.assertEquals(RedFlags.get_red_flag(1)[0]['location'], '(0.00000, 0.0000)')
 
-    # def test_update_red_flags_comment(self):
-    #     """
-    #     Test updating a redflag's comment
-    #     """
-    #     self.post_red_flags()
-    #     red_flag_update = {            
-    #         "comment": "Took a bribe",
-    #         "date": "2018-01-01",
-    #         "image": "photo_0001.jpg",
-    #         "location": "(0.00000, 0.0000)",
-    #         "title": "Police Officer #123",
-    #         "video": "mov_00001.mp4",
-    #         "user_id": 1
-    #     }
-    #     comment_patch = self.test_client.patch(
-    #         '/api/v1/redflag/1/comment',
-    #         content_type='application/json',
-    #         data=json.dumps(red_flag_update))
-    #     comment_dict = json.loads(comment_patch.data)
+    def test_update_red_flags_comment(self):
+        """
+        Test updating a redflag's comment
+        """
+        self.post_red_flags()
+        red_flag_update = {            
+            "comment": "Took a bribe",
+            "date": "2018-01-01",
+            "image": "photo_0001.jpg",
+            "location": "(0.00000, 0.0000)",
+            "title": "Police Officer #123",
+            "video": "mov_00001.mp4",
+            "user_id": 1
+        }
+        comment_patch = self.test_client.patch(
+            '/api/v1/redflag/1/comment',
+            content_type='application/json',
+            data=json.dumps(red_flag_update))
+        comment_dict = json.loads(comment_patch.data)
 
-    #     self.assertEqual(comment_dict['status'], 200)
-    #     self.assertEqual(RedFlags.count(), 2)
-    #     self.assertEqual(
-    #         (comment_dict['data'][0]['message']),
-    #         'Updated red-flag record’s comment')
-    #     self.assertEquals(RedFlags.get_red_flag(1)[0]['comment'], 'Took a bribe')
+        self.assertEqual(comment_dict['status'], 200)
+        self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(
+            (comment_dict['data'][0]['message']),
+            'Updated red-flag record’s comment')
+        self.assertEquals(RedFlags.get_red_flag(1)[0]['comment'], 'Took a bribe')
 
-    # def test_delete_red_flag(self):
-    #     """
-    #     Test deleting a red flag
-    #     """
-    #     self.post_red_flags()
+    def test_delete_red_flag(self):
+        """
+        Test deleting a red flag
+        """
+        self.post_red_flags()
 
-    #     response = self.test_client.delete('/api/v1/redflag/1')
-    #     message = json.loads(response.data)
+        response = self.test_client.delete('/api/v1/redflag/1')
+        message = json.loads(response.data)
 
-    #     self.assertEqual(message['status'], 200)
-    #     self.assertEqual(RedFlags.count(), 1)
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(RedFlags.count(), 1)
 
-    #     self.assertEqual(
-    #         (message['data'][0]['message']),
-    #         'red-flag record has been deleted')
-    #     self.assertEqual((message['data'][0]['id']), 1)
+        self.assertEqual(
+            (message['data'][0]['message']),
+            'red-flag record has been deleted')
+        self.assertEqual((message['data'][0]['id']), 1)
 
-    # def test_delete_non_existent_red_flag(self):
-    #     """
-    #     Test deleting a red flag
-    #     """
-    #     self.post_red_flags()
+    def test_delete_non_existent_red_flag(self):
+        """
+        Test deleting a red flag
+        """
+        self.post_red_flags()
 
-    #     response = self.test_client.delete('/api/v1/redflag/3')
-    #     message = json.loads(response.data)
+        response = self.test_client.delete('/api/v1/redflag/3')
+        message = json.loads(response.data)
 
-    #     self.assertEqual(message['status'], 404)
-    #     self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(message['status'], 404)
+        self.assertEqual(RedFlags.count(), 2)
 
-    #     self.assertEqual(
-    #         (message['data'][0]['message']),
-    #         'Not Found')
+        self.assertEqual(
+            (message['data'][0]['message']),
+            'Not Found')

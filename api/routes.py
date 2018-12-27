@@ -107,5 +107,11 @@ def delete_red_flag(flag_id):
 
     return jsonify({'status': 200, 'data': [success_response]}), 200
 
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'status': 404, 'error': 'Not Found'}), 404
 
 
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'status': 400, 'error': 'Bad Request'}), 400
