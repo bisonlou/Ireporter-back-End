@@ -52,7 +52,7 @@ def get_red_flag(flag_id):
     if response == 404:
         return jsonify({'status': 404, 'error': 'Not Found'}), 404
     else:
-        return jsonify({'status': 200, 'data': response}), 200
+        return jsonify({'status': 200, 'data': response[0].to_dict()}), 200
 
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['PUT'])
@@ -71,7 +71,8 @@ def alter_red_flag(flag_id):
         return jsonify({'status': 404, 'error': 'Not Found'}), 404
     else:
         updated_red_flag = RedFlags.get_red_flag(red_flag.get_id())
-        return jsonify({'status': 200, 'data': updated_red_flag})
+        return jsonify({'status': 200, 'data':
+                        [updated_red_flag[0].to_dict()]})
 
 
 @app.route('/api/v1/redflag/<int:flag_id>/<string:query>', methods=['PATCH'])
@@ -98,13 +99,15 @@ def update_red_flag_location(flag_id, query):
 def delete_red_flag(flag_id):
 
     red_flag = RedFlags.get_red_flag(flag_id)
-    RedFlags.delete_red_flag(red_flag[0])
+    if red_flag != 404:
+        RedFlags.delete_red_flag(red_flag[0])
+    else:
+        return jsonify({'status': 404, 'error': 'Not Found'}), 404
 
     success_response = {
         'id': flag_id,
         'message': 'red-flag record has been deleted'
     }
-
     return jsonify({'status': 200, 'data': [success_response]}), 200
 
 @app.errorhandler(404)

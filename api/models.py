@@ -26,7 +26,7 @@ class RedFlags():
     @staticmethod
     def get_red_flag(flag_id):
         # covert flag item to dictionaties
-        red_flag = [red_flag.__dict__ for red_flag in
+        red_flag = [red_flag for red_flag in
                     db if red_flag.get_id() == flag_id]
         if len(red_flag) > 0:
             return red_flag
@@ -56,9 +56,9 @@ class RedFlags():
     @staticmethod
     def delete_red_flag(red_flag):
         current_red_flag = [flag for flag in
-                            db if flag.get_id() == red_flag['flag_id']]
+                            db if flag.get_id() == red_flag.get_id()]
 
-        db.remove(current_red_flag[0])  
+        db.remove(current_red_flag[0])
 
 
 class RedFlag():
@@ -94,18 +94,21 @@ class RedFlag():
 
     def video(self, new_video):
         self.video = new_video
-        
+
     def to_string(self):
         return f'{self.flag_id}, {self.title}, {self.comment}, {self.date}, {self.location}'
-    
+
     def to_dict(self):
-        return {'flag_id': self.flag_id,
-                'title': self.title,
-                'date': self.date,
-                'comment': self.comment,
-                'location': self.location,
-                'image': self.image,
-                'video': self.video}
+        return self.__dict__
+        # return {'flag_id': self.flag_id,
+        #         'title': self.title,
+        #         'date': self.date,
+        #         'comment': self.comment,
+        #         'location': self.location,
+        #         'image': self.image,
+        #         'video': self.video,
+        #         'user_id': self.user_id
+        #         }
 
 
 
