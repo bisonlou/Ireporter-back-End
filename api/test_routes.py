@@ -1,6 +1,7 @@
 import unittest
 import json
-from api.routes import app, red_flags
+from api.routes import app
+from api.models import RedFlags
 
 
 class TestRoutes(unittest.TestCase):
@@ -11,33 +12,25 @@ class TestRoutes(unittest.TestCase):
         """
         self.test_client = app.test_client()
 
-    def tearDown(self):
-        """
-        teardown test client
-        """
-        red_flags.clear()    
-    
-    def post_red_flags(self):
-        """
-        Function to post sample red flags to list
-        """
         red_flag_1 = {
             'date': '2018-12-24',
-            'offender': 'Police Officer',
+            'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
+            'video': 'mov_0987.mp4',
+            'user_id': 1
         }
 
         red_flag_2 = {
             'date': '2018-12-12',
-            'offender': 'Magistrate',
+            'title': 'Magistrate',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }        
+            'video': 'mov_0987.mp4',
+            'user_id': 2
+        }
 
         self.test_client.post(
             '/api/v1/redflag',
@@ -50,180 +43,226 @@ class TestRoutes(unittest.TestCase):
             content_type='application/json',
             data=json.dumps(red_flag_2)
         )
-        
-    def test_add_red_flag(self):
+
+    def tearDown(self):
+        """
+        teardown test client
+        """
+        RedFlags.remove_all()
+
+    def test_add_proper_red_flag(self):
         """
         Test adding a red flag with expected details
         """
-        proper_red_flag = {
+        red_flag = {
             'date': '2018-12-24',
-            'offender': 'Police Officer',
+            'title': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'image': 'photo_0979.jpg',
+            'video': 'mov_0987.mp4',
+            'user_id': 1
+        }
+
+        response = self.test_client.post(
+            '/api/v1/redflag',
+            content_type='application/json',
+            data=json.dumps(red_flag)
+        )
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 201)
+        self.assertEqual(message['data'][0]['message'],
+                         'Created red-flag record')
+        self.assertEqual(RedFlags.count(), 3)
+
+    def test_add_bad_red_flag(self):
+        """
+        Test adding a red flag without expected details
+        """
+        red_flag = {
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'image': 'photo_0979.jpg',
             'video': 'mov_0987.mp4'
         }
 
-        bad_red_flag = {
-            'comment': 'Police officer at CPS Badge #162',
-            'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
-        }
-
-        proper_post_response = self.test_client.post(
+        response = self.test_client.post(
             '/api/v1/redflag',
             content_type='application/json',
-            data=json.dumps(proper_red_flag)
-        )
+            data=json.dumps(red_flag)
+            )
+        message = json.loads(response.data)
 
-        bad_post_response = self.test_client.post(
-            '/api/v1/redflag',
-            content_type='application/json',
-            data=json.dumps(bad_red_flag)
-        )
-
-        proper_post_message = json.loads(proper_post_response.data)
-        bad_post_message = json.loads(bad_post_response.data)
-        
-        self.assertEqual(proper_post_message['status'], 201)  
-        self.assertEqual(proper_post_message['data'][0]['message'], 'Created red-flag record') 
-
-        self.assertEqual(bad_post_message['status'], 400)  
-        self.assertEqual(bad_post_message['error'], 'Bad Request') 
-        self.assertTrue(len(red_flags) == 1)
+        self.assertEqual(message['status'], 400)
+        self.assertEqual(message['error'], 'Bad Request')
+        self.assertEqual(RedFlags.count(), 2)
 
     def test_get_all_red_flags(self):
         """
         Test getting all red flags
         """
-        self.post_red_flags()
-        response = self.test_client.get(
-            '/api/v1/redflags')
+        response = self.test_client.get('/api/v1/redflags')
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 2)    
+        self.assertEquals(RedFlags().count(), 2)
 
-    def test_get_red_flag(self):
+    def test_get_existing_red_flag(self):
         """
-        Test getting all red flags
+        Test getting one red flag that exists
         """
-        
-        self.post_red_flags()
-        proper_get_response = self.test_client.get(
-            '/api/v1/redflag/1')
-        bad_get_response = self.test_client.get(
-            '/api/v1/redflag/')
+        response = self.test_client.get('/api/v1/redflag/1')
+        message = json.loads(response.data)
 
-        proper_get_message = json.loads(proper_get_response.data)
-        bad_get_message = json.loads(bad_get_response.data)
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(message['data'][0]['flag_id'], 1)
+        self.assertEqual(message['data'][0]['title'], 'Police Officer')
 
-        self.assertEqual(proper_get_message['status'], 200)
-        self.assertEqual(proper_get_message['data'][0]['id'], 1)
-        self.assertEqual(proper_get_message['data'][0]['offender'], 'Police Officer')   
-        self.assertEqual(len(proper_get_message['data']), 1)
+    def test_get_non_existent_red_flag(self):
+        """
+        Test getting one red flag that does not exist
+        """
+        response = self.test_client.get('/api/v1/redflag/10')
+        message = json.loads(response.data)
 
-        self.assertEqual(bad_get_message['status'], 404)
-        self.assertEqual(bad_get_message['error'], 'Not Found')
+        self.assertEqual(message['status'], 404)
+        self.assertEqual(message['error'], 'Not Found')
 
     def test_alter_entire_red_flag(self):
         """
-        Test getting all red flags
+        Test updating a red flag
         """
-        self.post_red_flags()
-
-        red_flag_update = {            
+        red_flag = {
+            "title": "Bribery",
             "comment": "Police officer at CPS Badge #123",
             "date": "2018-01-01",
             "image": "photo_0001.jpg",
             "location": "(0.00000, 0.0000)",
-            "offender": "Police Officer #123",
-            "video": "mov_00001.mp4"
+            "video": "mov_00001.mp4",
+            "user_id": 1
         }
 
-        proper_put_response = self.test_client.put(
+        response = self.test_client.put(
             '/api/v1/redflag/1',
             content_type='application/json',
-            data=json.dumps(red_flag_update)
-        )
+            data=json.dumps(red_flag)
+            )
+        message = json.loads(response.data)
 
-        bad_put_response = self.test_client.put(
-            '/api/v1/redflag/',
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(message['data'][0]['flag_id'], 1)
+        self.assertEqual(message['data'][0]['date'], '2018-01-01')
+        self.assertEqual(RedFlags.count(), 2)
+
+    def test_alter_entire_red_flag_with_bad_input(self):
+        """
+        Test updating a red flag without specifying a flag id
+        """
+        red_flag = {
+            "comment": "Police officer at CPS Badge #123",
+            "date": "2018-01-01",
+            "image": "photo_0001.jpg",
+            "location": "(0.00000, 0.0000)",
+            "video": "mov_00001.mp4",
+            "user_id": 1
+        }
+
+        response = self.test_client.put(
+            '/api/v1/redflag/1',
             content_type='application/json',
-            data=json.dumps(red_flag_update)
+            data=json.dumps(red_flag)
         )
+        message = json.loads(response.data)
 
-        proper_put_message = json.loads(proper_put_response.data)
-        bad_put_message = json.loads(bad_put_response.data)        
-
-        self.assertEqual(proper_put_message['status'], 200)
-        self.assertEqual(proper_put_message['data'][0]['id'], 1)   
-        self.assertEqual(proper_put_message['data'][0]['offender'], 'Police Officer #123')   
-        self.assertEqual(proper_put_message['data'][0]['date'], '2018-01-01')   
-        self.assertEqual(proper_put_message['data'][0]['image'], 'photo_0001.jpg')   
-        self.assertEqual(proper_put_message['data'][0]['location'], '(0.00000, 0.0000)')   
-        self.assertEqual(proper_put_message['data'][0]['video'], 'mov_00001.mp4')   
-        self.assertEqual(proper_put_message['data'][0]['comment'], 'Police officer at CPS Badge #123')   
-        self.assertEqual(len(proper_put_message['data']), 1)
-        self.assertEqual(len(red_flags), 2)
-
-        self.assertEqual(bad_put_message['status'], 404)
-        self.assertEqual(bad_put_message['error'], 'Not Found')
-
-    def test_update_red_flags_location(self):
-        """
-        Test updating a redflags location
-        """
-        self.post_red_flags()
-
-        location_patch = self.test_client.patch(
-            '/api/v1/redflag/1/(0.000000, 0.000000)')
-        comment_patch = self.test_client.patch(
-            "/api/v1/redflag/1/'Took a bribe'")
-
-        location_dict = json.loads(location_patch.data)
-        comment_dict = json.loads(comment_patch.data)
-
-        self.assertEqual(location_dict['status'], 200)
-        self.assertEqual(comment_dict['status'], 200)        
-        self.assertTrue(len(red_flags) == 2)
-
-        self.assertEqual(
-            (location_dict['data'][0]['message']),
-            'Updated red-flag record’s location')
-        self.assertEqual(
-            (comment_dict['data'][0]['message']),
-            'Updated red-flag record’s comment')
-
-        self.assertEqual((comment_dict['data'][0]['id']), 1)
-        self.assertEqual((location_dict['data'][0]['id']), 1)
-
-        self.assertEquals(red_flags[0]['location'], '(0.000000, 0.000000)')
-        self.assertEquals(red_flags[0]['comment'], 'Took a bribe')
+        self.assertEqual(message['status'], 400)
+        self.assertEqual(message['error'], 'Bad Request')
     
-    def test_delete_red_flag(self):
-        """
-        Test deleting a red flag
-        """
-        self.post_red_flags()
+    # def test_update_red_flags_location(self):
+    #     """
+    #     Test updating a redflags location
+    #     """
+    #     self.post_red_flags()
+    #     red_flag_update = {            
+    #         "comment": "Police officer at CPS Badge #123",
+    #         "date": "2018-01-01",
+    #         "image": "photo_0001.jpg",
+    #         "location": "(0.00000, 0.0000)",
+    #         "title": "Police Officer #123",
+    #         "video": "mov_00001.mp4",
+    #         "user_id": 1
+    #     }
 
-        response = self.test_client.delete('/api/v1/redflag/1')
-        message = json.loads(response.data)
+    #     location_patch = self.test_client.patch(
+    #         '/api/v1/redflag/1/location',
+    #         content_type='application/json',
+    #         data=json.dumps(red_flag_update))
+    #     location_dict = json.loads(location_patch.data)
 
-        self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 1)
-        self.assertEqual(
-            (message['data'][0]['message']),
-            'red-flag record has been deleted')
-        self.assertEqual((message['data'][0]['id']), 1)
+    #     self.assertEqual(location_dict['status'], 200)
+    #     self.assertEqual(RedFlags.count(), 2)
+    #     self.assertEqual(
+    #         (location_dict['data'][0]['message']),
+    #         'Updated red-flag record’s location')
+    #     print(RedFlags.get_red_flag(1))
+    #     self.assertEquals(RedFlags.get_red_flag(1)[0]['location'], '(0.00000, 0.0000)')
 
-        response = self.test_client.delete('/api/v1/redflag/2')
-        message = json.loads(response.data)
+    # def test_update_red_flags_comment(self):
+    #     """
+    #     Test updating a redflag's comment
+    #     """
+    #     self.post_red_flags()
+    #     red_flag_update = {            
+    #         "comment": "Took a bribe",
+    #         "date": "2018-01-01",
+    #         "image": "photo_0001.jpg",
+    #         "location": "(0.00000, 0.0000)",
+    #         "title": "Police Officer #123",
+    #         "video": "mov_00001.mp4",
+    #         "user_id": 1
+    #     }
+    #     comment_patch = self.test_client.patch(
+    #         '/api/v1/redflag/1/comment',
+    #         content_type='application/json',
+    #         data=json.dumps(red_flag_update))
+    #     comment_dict = json.loads(comment_patch.data)
 
-        self.assertEqual(message['status'], 200)
-        self.assertTrue(len(red_flags) == 0)
-        self.assertEqual(
-            (message['data'][0]['message']),
-            'red-flag record has been deleted')
-        self.assertEqual((message['data'][0]['id']), 2)
+    #     self.assertEqual(comment_dict['status'], 200)
+    #     self.assertEqual(RedFlags.count(), 2)
+    #     self.assertEqual(
+    #         (comment_dict['data'][0]['message']),
+    #         'Updated red-flag record’s comment')
+    #     self.assertEquals(RedFlags.get_red_flag(1)[0]['comment'], 'Took a bribe')
+
+    # def test_delete_red_flag(self):
+    #     """
+    #     Test deleting a red flag
+    #     """
+    #     self.post_red_flags()
+
+    #     response = self.test_client.delete('/api/v1/redflag/1')
+    #     message = json.loads(response.data)
+
+    #     self.assertEqual(message['status'], 200)
+    #     self.assertEqual(RedFlags.count(), 1)
+
+    #     self.assertEqual(
+    #         (message['data'][0]['message']),
+    #         'red-flag record has been deleted')
+    #     self.assertEqual((message['data'][0]['id']), 1)
+
+    # def test_delete_non_existent_red_flag(self):
+    #     """
+    #     Test deleting a red flag
+    #     """
+    #     self.post_red_flags()
+
+    #     response = self.test_client.delete('/api/v1/redflag/3')
+    #     message = json.loads(response.data)
+
+    #     self.assertEqual(message['status'], 404)
+    #     self.assertEqual(RedFlags.count(), 2)
+
+    #     self.assertEqual(
+    #         (message['data'][0]['message']),
+    #         'Not Found')

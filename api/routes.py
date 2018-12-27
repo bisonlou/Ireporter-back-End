@@ -1,153 +1,111 @@
-from flask import Flask
-from flask import jsonify
-from flask import abort
-from flask import make_response
-from flask import request
+from flask import Flask, request, json, jsonify
+from api.models import RedFlag, RedFlags
+import api.Validator
 
 app = Flask(__name__)
-
-red_flags = []
-
-
-def get_current_id():
-    if len(red_flags) == 0:
-        return 0        
-    return red_flags[-1]['id']
-
-
-def validate_post_red_flag():
-    if not request.json:
-        abort(400)
-
-    key_list = ['date', 'offender', 'comment']
-    for key in key_list:
-        if key not in request.json:
-            abort(400) 
-
-
-def get_red_flag_from_list(flag_id):
-    return [red_flag for red_flag in
-            red_flags if red_flag['id'] == flag_id]
 
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({'message': 'Hello world'})
+    return jsonify({'greeting': 'Welcome to iReporter',
+                    'post flag': '/api/v1/redflag',
+                    'get flags': '/api/v1/redflags',
+                    'get flag': '/api/v1/redflag/flag_id',
+                    'alter flag': '/api/v1/redflag/flag_id',
+                    'update flag': '/api/v1/redflag/flag_id/key',
+                    'delete flag': '/api/v1/redflag/flag_id'
+                    })
 
 
 @app.route('/api/v1/redflag', methods=['POST'])
 def add_red_flag():
-    validate_post_red_flag()
-    flag_id = get_current_id() + 1
-    
-    red_flag = {
-            'id': flag_id,
-            'date': request.json['date'],
-            'offender': request.json['offender'],
-            'location': request.json['location'],
-            'comment': request.json['comment'],
-            'image': request.json['image'],
-            'video': request.json['video']
-            }
-            
+    data = request.get_json()   
+    if api.Validator.validate_red_flag(data) == 400:
+        return jsonify({'status': 400, 'error': 'Bad Request'}), 400
+
+    red_flags = RedFlags()
+    flag_id = red_flags.get_next_flag_id()
+    red_flag = RedFlag(flag_id, data['title'], data['date'], data['comment'],
+                       data['location'], data['user_id'], data['image'],
+                       data['video'])
+    red_flags.post_red_flag(red_flag)
+
     success_response = {
         'id': flag_id,
         'message': 'Created red-flag record'
     }
-
-    red_flags.append(red_flag)
-    return jsonify({'status': 201, 'data': [success_response]})
+    return jsonify({'status': 201, 'data': [success_response]}), 201
 
 
 @app.route('/api/v1/redflags', methods=['GET'])
 def get_red_flags():
-
-    return jsonify({'status': 200, 'data': [red_flags]})
+    return jsonify({'status': 200, 'data':
+                    RedFlags.get_all()})
 
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['GET'])
 def get_red_flag(flag_id):
+    if api.Validator.validate_id(flag_id) == 404:
+        return jsonify({'status': 400, 'error': 'Bad Request'}), 400
 
-    red_flag = get_red_flag_from_list(flag_id)
-
-    if len(red_flag) == 0:
-        abort(404)       
-
-    return jsonify({'status': 200, 'data': [red_flag[0]]})
+    response = RedFlags.get_red_flag(flag_id)
+    if response == 404:
+        return jsonify({'status': 404, 'error': 'Not Found'}), 404
+    else:
+        return jsonify({'status': 200, 'data': response}), 200
 
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['PUT'])
 def alter_red_flag(flag_id):
-    red_flag = get_red_flag_from_list(flag_id)
+    data = request.get_json()
+    if api.Validator.validate_id(flag_id) == 400:
+        return jsonify({'status': 400, 'error': 'Bad Request'}), 400
 
-    if len(red_flag) == 0:
-        abort(404)
-    if not request.json:
-        abort(400)
+    if api.Validator.validate_red_flag(data) == 400:
+        return jsonify({'status': 400, 'error': 'Bad Request'}), 400
 
-    key_list = ['offender', 'location', 'image', 'video', 'date', 'comment']
-    for key in key_list:        
-        red_flag[0][key] = request.json.get(key, red_flag[0][key])     
-
-    return jsonify({'status': 200, 'data': [red_flag[0]]})
-
-
-@app.route('/api/v1/redflag/<int:flag_id>/<string:resource>', methods=['PATCH'])
-def update_red_flag(flag_id, resource):
-
-    if not int(flag_id):
-        abort(400)
-    if len(resource) == 0:
-        abort(400)
-
-    red_flag = get_red_flag_from_list(flag_id)
-
-    if len(red_flags[0]) == 0:
-        abort(404)
-
-    message = ""
-    if type(eval(resource)) is tuple:       
-        red_flag[0]['location'] = resource
-        message = 'Updated red-flag record’s location'
+    red_flag = RedFlag(flag_id, data['title'], data['date'], data['comment'],
+                       data['location'], data['user_id'], data['image'],
+                       data['video'])
+    if RedFlags.put_red_flag(red_flag) == 404:
+        return jsonify({'status': 404, 'error': 'Not Found'}), 404
     else:
-        red_flag[0]['comment'] = str(resource).replace("'", "")
-        message = 'Updated red-flag record’s comment'    
-    
-    success_response = {
-        'id': red_flag[0]['id'],
-        'message': message
-        }
+        updated_red_flag = RedFlags.get_red_flag(red_flag.get_id())
+        return jsonify({'status': 200, 'data': updated_red_flag})
 
-    return jsonify({'status': 200, 'data': [success_response]})
+
+@app.route('/api/v1/redflag/<int:flag_id>/<string:query>', methods=['PATCH'])
+def update_red_flag_location(flag_id, query):
+    data = request.get_json()
+    if api.Validator.validate_red_flag(data) == 400:
+        return jsonify({'status': 400, 'error': 'Bad Request'}), 400
+
+    red_flag = RedFlag(flag_id, data['title'], data['date'], data['comment'],
+                       data['location'], data['user_id'], data['image'],
+                       data['video'])
+
+    if RedFlags.patch_red_flag(red_flag, query) == 404:
+        return jsonify({'status': 404, 'error': 'Not Found'}), 404
+    else:
+        success_response = {
+            'id': flag_id,
+            'message': f'Updated red-flag record’s {query}'
+            }
+    return jsonify({'status': 200, 'data': [success_response]}), 200
 
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['DELETE'])
 def delete_red_flag(flag_id):
 
-    if not int(flag_id):
-        abort(400)
+    red_flag = RedFlags.get_red_flag(flag_id)
+    RedFlags.delete_red_flag(red_flag[0])
 
-    red_flag = get_red_flag_from_list(flag_id)
-
-    if len(red_flags[0]) == 0:
-        abort(404)
-
-    red_flags.remove(red_flag[0])  
-    
     success_response = {
-        'id': red_flag[0]['id'],
+        'id': flag_id,
         'message': 'red-flag record has been deleted'
-        }
+    }
 
-    return jsonify({'status': 200, 'data': [success_response]})
-
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({'status': 404, 'error': 'Not Found'})
+    return jsonify({'status': 200, 'data': [success_response]}), 200
 
 
-@app.errorhandler(400)
-def bad_request(error):
-    return jsonify({'status': 400, 'error': 'Bad Request'})
+
