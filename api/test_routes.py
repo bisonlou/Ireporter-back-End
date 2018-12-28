@@ -129,7 +129,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['status'], 404)
         self.assertEqual(message['error'], 'Not Found')
 
-    def test_alter_entire_red_flag(self):
+    def test_put_red_flag(self):
         """
         Test updating a red flag
         """
@@ -155,7 +155,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['date'], '2018-01-01')
         self.assertEqual(RedFlags.count(), 2)
 
-    def test_alter_entire_red_flag_with_bad_input(self):
+    def test_put_red_flag_with_bad_input(self):
         """
         Test updating a red flag without specifying a flag id
         """
@@ -177,7 +177,31 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 400)
         self.assertEqual(message['error'], 'Bad Request')
-    
+
+    def test_put_nonexistent_red_flag(self):
+        """
+        Test updating a red flag without specifying a flag id
+        """
+        red_flag = {
+            "title": "Bribery",
+            "comment": "Police officer at CPS Badge #123",
+            "date": "2018-01-01",
+            "image": "photo_0001.jpg",
+            "location": "(0.00000, 0.0000)",
+            "video": "mov_00001.mp4",
+            "user_id": 1
+        }
+
+        response = self.test_client.put(
+            '/api/v1/redflag/10',
+            content_type='application/json',
+            data=json.dumps(red_flag)
+        )
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 404)
+        self.assertEqual(message['error'], 'Not Found')
+
     def test_update_red_flags_location(self):
         """
         Test updating a redflags location
