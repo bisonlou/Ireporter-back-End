@@ -26,57 +26,47 @@ class RedFlags():
     @staticmethod
     def get_red_flag(flag_id):
         # covert flag item to dictionaties
-        red_flag = [red_flag for red_flag in
-                    db if red_flag.get_id() == flag_id]
-        if len(red_flag) > 0:
-            return red_flag
-        else:
-            return 404
+        existing_red_flag = [red_flag for red_flag in
+                             db if red_flag.get_id() == flag_id]
+        if len(existing_red_flag) == 0:
+            raise ValueError
+        return existing_red_flag
 
     @staticmethod
-    def put_red_flag(red_flag):
-        current_red_flag = [flag for flag in
-                            db if flag.get_id() == red_flag.get_id()]
-        if len(current_red_flag) > 0:
-            keys = ['title', 'location', 'image', 'video', 'date', 'comment']
-            for key in keys:
-                setattr(current_red_flag[0], key, getattr(red_flag, key))
-        else:
-            return 404
+    def put_red_flag(existing_flag, update_flag):        
+        keys = ['title', 'location', 'image', 'video', 'date', 'comment']
+        for key in keys:
+            setattr(existing_flag[0], key, getattr(update_flag, key))
 
     @staticmethod
-    def patch_red_flag(red_flag, key):
-        current_red_flag = [flag for flag in
-                            db if flag.get_id() == red_flag.get_id()]
-        if len(current_red_flag) > 0:
-            setattr(current_red_flag[0], key, getattr(red_flag, key))
-        else:
-            return 404
+    def patch_red_flag(existing_red_flag, red_flag, key):
+        setattr(existing_red_flag[0], key, getattr(red_flag, key))
 
     @staticmethod
     def delete_red_flag(red_flag):
-        current_red_flag = [flag for flag in
-                            db if flag.get_id() == red_flag.get_id()]
-
-        db.remove(current_red_flag[0])
+        found_red_flag = RedFlags.get_red_flag(red_flag.get_id())
+        if found_red_flag == 0:
+            return 404
+        db.remove(found_red_flag[0])
 
 
 class RedFlag():
 
-    def __init__(self, flag_id, title, date, comment, location, user_id,
-                 image=None, video=None):
-        self.flag_id = flag_id
-        self.title = title
-        self.date = date
-        self.location = location
-        self.comment = comment
-        self.user_id = user_id
-        self.image = image
-        self.video = video
+    def __init__(self, **kwags):
+        self.flag_id = kwags['flag_id']
+        self.title = kwags['title']
+        self.date = kwags['date']
+        self.comment = kwags['comment']
+        self.user_id = kwags['user_id']
+        self.location = kwags['location']     
+        if 'image' in kwags:
+            self.image = kwags['image']
+        if 'video' in kwags:
+            self.video = kwags['video']
 
     def get_id(self):
         return self.flag_id
-    
+
     def title(self, new_title):
         self.title = new_title
 
