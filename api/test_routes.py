@@ -75,6 +75,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['message'],
                          'Created red-flag record')
         self.assertEqual(RedFlags.count(), 3)
+        self.assertEqual(response.status_code, 201)
 
     def test_add_bad_red_flag(self):
         """
@@ -97,6 +98,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['status'], 400)
         self.assertEqual(message['error'], 'Bad Request')
         self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_all_red_flags(self):
         """
@@ -107,6 +109,7 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 200)
         self.assertEquals(RedFlags().count(), 2)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_existing_red_flag(self):
         """
@@ -118,6 +121,7 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['status'], 200)
         self.assertEqual(message['data']['flag_id'], 1)
         self.assertEqual(message['data']['title'], 'Police Officer')
+        self.assertEqual(response.status_code, 200)
 
     def test_get_non_existent_red_flag(self):
         """
@@ -128,6 +132,7 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 404)
         self.assertEqual(message['error'], 'Not Found')
+        self.assertEqual(response.status_code, 404)
 
     def test_put_red_flag(self):
         """
@@ -154,8 +159,9 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['flag_id'], 1)
         self.assertEqual(message['data'][0]['date'], '2018-01-01')
         self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(response.status_code, 200)
 
-    def test_put_red_flag_with_bad_input(self):
+    def test_put_red_flag_with_bad_id(self):
         """
         Test updating a red flag without specifying a flag id
         """
@@ -177,6 +183,7 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 400)
         self.assertEqual(message['error'], 'Bad Request')
+        self.assertEqual(response.status_code, 400)
 
     def test_put_nonexistent_red_flag(self):
         """
@@ -201,6 +208,30 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 404)
         self.assertEqual(message['error'], 'Not Found')
+        self.assertEqual(response.status_code, 404)
+
+    def test_put_red_flag_without_optional_keys(self):
+        """
+        Test updating a red flag without optional keys
+        """
+        red_flag = {
+            "title": "Bribery",
+            "comment": "Police officer at CPS Badge #123",
+            "date": "2018-01-01",
+            "location": "(0.00000, 0.0000)",
+            "user_id": 1
+        }
+
+        response = self.test_client.put(
+            '/api/v1/redflag/1',
+            content_type='application/json',
+            data=json.dumps(red_flag)
+        )
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(message['data'][0]['date'], '2018-01-01')
+        self.assertEqual(response.status_code, 200)
 
     def test_update_red_flags_location(self):
         """
@@ -227,7 +258,9 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(
             (message['data'][0]['message']),
             'Updated red-flag record’s location')
-        self.assertEquals(RedFlags.get_red_flag(1)[0].location, '(0.00000, 0.0000)')
+        self.assertEquals(RedFlags.get_red_flag(1)[0].location,
+                          '(0.00000, 0.0000)')
+        self.assertEqual(response.status_code, 200)
 
     def test_update_red_flags_comment(self):
         """
@@ -254,6 +287,7 @@ class TestRoutes(unittest.TestCase):
             (message['data'][0]['message']),
             'Updated red-flag record’s comment')
         self.assertEquals(RedFlags.get_red_flag(1)[0].comment, 'Took a bribe')
+        self.assertEqual(response.status_code, 200)
 
     def test_delete_red_flag(self):
         """
@@ -264,11 +298,11 @@ class TestRoutes(unittest.TestCase):
 
         self.assertEqual(message['status'], 200)
         self.assertEqual(RedFlags.count(), 1)
-
         self.assertEqual(
             (message['data'][0]['message']),
             'red-flag record has been deleted')
         self.assertEqual((message['data'][0]['id']), 1)
+        self.assertEqual(response.status_code, 200)
 
     def test_delete_non_existent_red_flag(self):
         """
@@ -280,3 +314,27 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['status'], 404)
         self.assertEqual(RedFlags.count(), 2)
         self.assertEqual(message['error'], 'Not Found')
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_with_bad_id(self):
+        """
+        Test deleting a red flag
+        """
+        response = self.test_client.delete('/api/v1/redflag/')
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 404)
+        self.assertEqual(RedFlags.count(), 2)
+        self.assertEqual(message['error'], 'Not Found')
+        self.assertEqual(response.status_code, 404)
+
+    def test_index(self):
+        """
+        Test default route
+        """
+        response = self.test_client.get('/')
+        message = json.loads(response.data)
+
+        self.assertEqual(message['greeting'], 'Welcome to iReporter')
+        self.assertEqual(response.status_code, 200)
+

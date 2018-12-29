@@ -36,7 +36,8 @@ class RedFlags():
     def put_red_flag(existing_flag, update_flag):        
         keys = ['title', 'location', 'image', 'video', 'date', 'comment']
         for key in keys:
-            setattr(existing_flag[0], key, getattr(update_flag, key))
+            if hasattr(update_flag, key):
+                setattr(existing_flag[0], key, getattr(update_flag, key))
 
     @staticmethod
     def patch_red_flag(existing_red_flag, red_flag, key):
@@ -67,38 +68,11 @@ class RedFlag():
     def get_id(self):
         return self.flag_id
 
-    def title(self, new_title):
-        self.title = new_title
-
-    def comment(self, new_comment):
-        self.comment = new_comment
-
-    def date(self, new_date):
-        self.date = new_date
-
-    def location(self, new_location):
-        self.location = new_location
-
-    def image(self, new_image):
-        self.image = new_image
-
-    def video(self, new_video):
-        self.video = new_video
-
     def to_string(self):
         return f'{self.flag_id}, {self.title}, {self.comment}, {self.date}, {self.location}'
 
     def to_dict(self):
         return self.__dict__
-        # return {'flag_id': self.flag_id,
-        #         'title': self.title,
-        #         'date': self.date,
-        #         'comment': self.comment,
-        #         'location': self.location,
-        #         'image': self.image,
-        #         'video': self.video,
-        #         'user_id': self.user_id
-        #         }
 
 
 
