@@ -10,8 +10,3 @@ class ValidateRedFlags():
         for key in required_keys:
             if key not in red_flag_data:
                 raise KeyError
-
-    def is_id_int(flag_id):
-        if not int(flag_id) or flag_id == '':
-            raise TypeError
-

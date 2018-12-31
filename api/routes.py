@@ -15,7 +15,7 @@ def index():
             'alter flag': '/api/v1/redflag/flag_id',
             'update flag': '/api/v1/redflag/flag_id/key',
             'delete flag': '/api/v1/redflag/flag_id'
-            })
+            }), 200
 
 
 @app.route('/api/v1/redflag', methods=['POST'])
@@ -41,7 +41,6 @@ def get_red_flags():
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['GET'])
 def get_red_flag(flag_id):
-    validate_id(flag_id)
     red_flags = get_red_flag_by_Id(flag_id)
     return jsonify({'status': 200, 'data': red_flags[0].to_dict()}), 200
 
@@ -59,6 +58,7 @@ def alter_red_flag(flag_id):
     RedFlags.put_red_flag(existing_red_flag, update_flag)
 
     updated_red_flag = RedFlags.get_red_flag(update_flag.get_id())
+    print(updated_red_flag)
     return jsonify({'status': 200, 'data':
                     [updated_red_flag[0].to_dict()]})
 
@@ -82,8 +82,8 @@ def update_red_flag_location(flag_id, query):
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['DELETE'])
 def delete_red_flag(flag_id):
-
     red_flag = get_red_flag_by_Id(flag_id)
+
     RedFlags.delete_red_flag(red_flag[0])
 
     success_response = {
@@ -104,13 +104,6 @@ def validate_keys(data):
     try:
         ValidateRedFlags.has_required_keys(data)
     except KeyError:
-        abort(400)
-
-
-def validate_id(flag_id):
-    try:
-        ValidateRedFlags.is_id_int(flag_id)
-    except TypeError:
         abort(400)
 
 

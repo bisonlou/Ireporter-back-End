@@ -136,19 +136,45 @@ table th {
 
 /* login  */
 
-.login-box {
-    float:right;
+.black-box {
+    margin:auto;
     margin-top: 100px;
     padding:40px 20px;    
     background:#000;    
     opacity: 0.7;
-    width:280px;
+    width:80%;
+    height:320px;    
+    color:#fff; 
+}
+
+.welcome-box {
+    float:left;        
+    text-align: center; 
+    padding-left: 20px;  
     height:320px;
-    color:#fff;    
+    width:50%;
+}
+
+.welcome-box p {
+    margin:0px;
+    padding: 0px;   
+    line-height: 1.8em;
+    font-size:14px;
+    font-weight: 100;    
 }
 
 
-.login-box h1 {
+.login-box {
+    float:right;
+    width:30%;
+    height:320px;
+    padding-left: 20px;
+    border-left: 1px solid #fff;
+      
+}
+
+
+.black-box h1 {
     margin:0;
     padding: 0;
     margin-bottom: 20px;
@@ -162,7 +188,7 @@ table th {
     font-weight: 100;
 }
 
-.login-box input {
+.login-box input, .welcome-box input {
     width:100%; 
     margin-bottom: 20px;
     outline:none;
@@ -175,7 +201,8 @@ table th {
 }
 
 
-.register-box input[type=submit], .login-box input[type=submit] {
+.register-box input[type=submit], .login-box input[type=submit],
+.welcome-box input[type=submit] {
     border-radius: 22px;
     padding: 10px;
     font-size: 16px;
@@ -291,7 +318,7 @@ border-spacing: 0px;
 
 .tables {
     background-color: rgb(250, 246, 246); 
-    padding: 20px;   
+    padding: 20px 0px;   
     min-height: 220px;
     width: 100%;
   }
@@ -428,37 +455,8 @@ border-spacing: 0px;
         background-image: url("../images/alex-reid-246078-unsplash.jpg") ;
         background-size: cover;
         background-position: center;
-    }
-    
-    
-    
-    .login-box{
-        float:right;
-        margin-top: 100px;
-        padding:40px 20px;    
-        background:#000;    
-        opacity: 0.7;
-        width:280px;
-        height:320px;
-        color:#fff;    
-    }
-    
-    
-    .login-box h1{
-        margin:0;
-        padding: 0;
-        margin-bottom: 20px;
-        text-align: center;
-        font-size: 40px;
-    }
-    
-    .login-box p{
-        margin:0;
-        padding: 0;   
-        font-size:16px;
-        font-weight: 100;
-    }
-    
+    }        
+        
     .flag-box p, .register-box p{
         margin:0;
         padding: 0;    
@@ -497,6 +495,23 @@ border-spacing: 0px;
         float: right;
     }
  
+    @media (max-width: 1000px){
+        .flag-box {
+            margin:auto;
+            width:80%;
+            padding-top: 10px;
+        }
+    
+        .flag-box .left, .flag-box .middle, .flag-box .right{
+            float:none;
+            width: 80%;
+            margin-bottom: 10px;
+            margin-right: 0px;
+            margin-left: 10px;
+            
+        }
+    }
+
     
 @media screen and (max-width: 768px){
     .tables{
@@ -534,10 +549,31 @@ border-spacing: 0px;
     }
 
     .flag-box {
-        width:20%;
+        margin:auto;
+        width:90%;
+        padding-top: 10px;
     }
-}
 
+    .flag-box .left, .flag-box .middle, .flag-box .right{
+        float:none;
+        width: 90%;
+        margin-bottom: 10px;
+        margin-right: 0px;
+        margin-left: 10px;
+        
+    }
+
+    .redflag-table .wide {
+        float: none;
+        width: 80%;
+    }
+
+    .intervention-table .wide{
+        float: none;
+        width: 80%;
+    }
+  
+}
 
 @media screen and (max-width: 550px){
     .tables{
@@ -554,6 +590,7 @@ border-spacing: 0px;
         font-size: 12px;
     }
 
+   
     .cards {
         padding:0px;
     }
@@ -581,7 +618,8 @@ border-spacing: 0px;
 
 @media screen and (max-width: 470px){
     .tables{
-        padding:10px;       
+        padding:10px;    
+        float:none;   
     }
 
     .tables .table1 table tbody tr {
@@ -614,8 +652,27 @@ border-spacing: 0px;
         width:90%;
     }
 
+    .redflag-table {
+        float: none;
+        width: 90%;
+    }
+
+    .intervention-table {
+        float: none;
+        width: 90%;
+    }
+
+    .card{
+        width:48%;
+    }
+
     .cards {
         padding:0px;
+    }
+
+    .cards table {
+        padding-top: 5px;
+        width: 80%;
     }
 
     .card1 {
@@ -636,5 +693,12 @@ border-spacing: 0px;
 
     .container{
         width: 95%;
+    }
+
+    .filter {
+        padding: 0px;
+        width: 100%;
+        padding: 0px;
+        height: 30px;
     }
 }

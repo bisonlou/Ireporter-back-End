@@ -30,37 +30,68 @@
         </header>
     </div>
     <div class="container">
-        <div class="flag-box">
-            <form action="home.html">
-                <div class="left">
-                    <p>Culprit</p>
-                    <input type="text" placeholder="Name">
-                    <p>Red flag date</p>
-                    <input type="date">
-                    <p>Description</p>
-                    <textarea width="100px" height="50px">Describe incident...</textarea>
-                    <p>Location</p>
-                    <div class="form-group">
-                        <input type="text" disabled="disabled">
-                        <button type="button">Get coordinates</button>
-                    </div>
-                </div>
-                <div class="middle">
-                    <p>Image file</p>
-                    <input type="file">
-                    <div class="image-box">
-                        <p>insert picture</p>
-                    </div>
-                </div>
-                <div class="right">
-                    <p>Video</p>
-                    <input type="file">
-                    <div class="image-box">
-                        <p>Insert video</p>
+            <form action="home.html" class="flag-box">
+                    <div class="left">
+                        <p>Title</p>
+                        <input type="text" placeholder="Name">
+                        <p>Red flag date</p>
+                        <input type="date">
+                        <p>Comment</p>
+                        <textarea width="100px" height="50px">Describe incident...</textarea>
+                        <p>Location</p>
+                        <div class="form-group">
+                            <input type="text" disabled="disabled">
+                            <button type="button">Get coordinates</button>
                         </div>
-                </div>
-        </div>
-        </form>
+                    </div>
+                    <div class="middle">
+                        <p>Image evidence</p>
+                        <input type="file">
+                        <div class="media-table">
+                            <table>
+                                <tr>
+                                    <td>image_001.jpg</td>
+                                    <td>250kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                                <tr>
+                                    <td>image_002.jpg</td>
+                                    <td>144kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                                <tr>
+                                    <td>image_003.jpg</td>
+                                    <td>205kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <p>Video evidence</p>
+                        <input type="file">
+                        <div class="media-table">
+                            <table>
+                                <tr>
+                                    <td>video_001.mov</td>
+                                    <td>10420kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                                <tr>
+                                    <td>video_002.mp4</td>
+                                    <td>25000kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                                <tr>
+                                    <td>video_003.mp4</td>
+                                    <td>35200kb</td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+            </form>
         <div class="flag-box-submit">
             <input type="submit" value="Submit  Changes">
         </div>
