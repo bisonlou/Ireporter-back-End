@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({
-            'greeting': 'Welcome to iReporter',+++++++++++++
+            'greeting': 'Welcome to iReporter',
             'post flag': 'https://bisonlou.herokuapp.com/api/v1/redflag',
             'get flags': 'https://bisonlou.herokuapp.com/api/v1/redflags',
             'get flag': 'https://bisonlou.herokuapp.com/api/v1/redflag/flag_id',

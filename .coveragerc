@@ -10,5 +10,5 @@ omit =
     */__init__.py
     tests/*
     */models.py
-    test_routes.py
+    */test_routes.py
     \Users\Bison\AppData\*
