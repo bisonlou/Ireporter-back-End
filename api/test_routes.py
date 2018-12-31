@@ -17,8 +17,11 @@ class TestRoutes(unittest.TestCase):
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
+                       {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}
+                       ],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'status': 'Under Investigation',
             'user_id': 1
         }
 
@@ -27,8 +30,9 @@ class TestRoutes(unittest.TestCase):
             'title': 'Magistrate',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'status': 'Resolved',
             'user_id': 2
         }
 
@@ -59,8 +63,9 @@ class TestRoutes(unittest.TestCase):
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4',
+            'images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
+            'videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}],
+            'status': 'Pending',
             'user_id': 1
         }
 
@@ -84,8 +89,9 @@ class TestRoutes(unittest.TestCase):
         red_flag = {
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
-            'image': 'photo_0979.jpg',
-            'video': 'mov_0987.mp4'
+            'images': 'photo_0979.jpg',
+            'videos': 'mov_0987.mp4',
+            'status': 'Resolved',
         }
 
         response = self.test_client.post(
@@ -142,9 +148,10 @@ class TestRoutes(unittest.TestCase):
             "title": "Bribery",
             "comment": "Police officer at CPS Badge #123",
             "date": "2018-01-01",
-            "image": "photo_0001.jpg",
-            "location": "(0.00000, 0.0000)",
-            "video": "mov_00001.mp4",
+            "location": "(0.00000,0.00000)",
+            "images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
+            "videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
+            'status': 'Resolved',
             "user_id": 1
         }
 
@@ -166,12 +173,13 @@ class TestRoutes(unittest.TestCase):
         Test updating a red flag without specifying a flag id
         """
         red_flag = {
-            "comment": "Police officer at CPS Badge #123",
-            "date": "2018-01-01",
-            "image": "photo_0001.jpg",
-            "location": "(0.00000, 0.0000)",
-            "video": "mov_00001.mp4",
-            "user_id": 1
+            'comment': 'Police officer at CPS Badge #123',
+            'date': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'status': 'Resolved',
+            'user_id': 1
         }
 
         response = self.test_client.put(
@@ -190,13 +198,14 @@ class TestRoutes(unittest.TestCase):
         Test updating a red flag without specifying a flag id
         """
         red_flag = {
-            "title": "Bribery",
-            "comment": "Police officer at CPS Badge #123",
-            "date": "2018-01-01",
-            "image": "photo_0001.jpg",
-            "location": "(0.00000, 0.0000)",
-            "video": "mov_00001.mp4",
-            "user_id": 1
+            'title': 'Bribery',
+            'comment': 'Police officer at CPS Badge #123',
+            'date': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'status': 'Resolved',
+            'user_id': 1
         }
 
         response = self.test_client.put(
@@ -215,11 +224,12 @@ class TestRoutes(unittest.TestCase):
         Test updating a red flag without optional keys
         """
         red_flag = {
-            "title": "Bribery",
-            "comment": "Police officer at CPS Badge #123",
-            "date": "2018-01-01",
-            "location": "(0.00000, 0.0000)",
-            "user_id": 1
+            'title': 'Bribery',
+            'comment': 'Police officer at CPS Badge #123',
+            'date': '2018-01-01',
+            'location': '(0.00000, 0.0000)',
+            'status': 'Pending',
+            'user_id': 1
         }
 
         response = self.test_client.put(
@@ -237,14 +247,15 @@ class TestRoutes(unittest.TestCase):
         """
         Test updating a redflags location
         """
-        red_flag = {            
-            "comment": "Police officer at CPS Badge #123",
-            "date": "2018-01-01",
-            "image": "photo_0001.jpg",
-            "location": "(0.00000, 0.0000)",
-            "title": "Police Officer #123",
-            "video": "mov_00001.mp4",
-            "user_id": 1
+        red_flag = {
+            'comment': 'Police officer at CPS Badge #123',
+            'date': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'title': 'Police Officer #123',
+            'videos':  [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'status': 'Pending',
+            'user_id': 1
         }
 
         response = self.test_client.patch(
@@ -267,13 +278,14 @@ class TestRoutes(unittest.TestCase):
         Test updating a redflag's comment
         """
         red_flag_update = {            
-            "comment": "Took a bribe",
-            "date": "2018-01-01",
-            "image": "photo_0001.jpg",
-            "location": "(0.00000, 0.0000)",
-            "title": "Police Officer #123",
-            "video": "mov_00001.mp4",
-            "user_id": 1
+            'comment': 'Took a bribe',
+            'date': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'title': 'Police Officer #123',
+            'videos': [{'id': 1, 'name': 'video_0979.jpg', 'size': 234}],
+            'status': 'Pending',
+            'user_id': 1
         }
         response = self.test_client.patch(
             '/api/v1/redflag/1/comment',

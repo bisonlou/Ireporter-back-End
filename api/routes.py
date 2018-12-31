@@ -103,7 +103,7 @@ def get_red_flag_by_Id(flag_id):
 def validate_keys(data):
     try:
         ValidateRedFlags.has_required_keys(data)
-    except KeyError:
+    except KeyError or TypeError:
         abort(400)
 
 
