@@ -50,15 +50,16 @@ def alter_red_flag(flag_id):
     data = request.get_json()
     validate_keys(data)
 
-    existing_red_flag = get_red_flag_by_Id(flag_id)
+    existing_flag = get_red_flag_by_Id(flag_id)
+    validate_is_owner(existing_flag, data['user_id'])
+    validate_is_modifiable(existing_flag)
 
     data['flag_id'] = flag_id
     update_flag = RedFlag(**data)
 
-    RedFlags.put_red_flag(existing_red_flag, update_flag)
+    RedFlags.put_red_flag(existing_flag, update_flag)
 
     updated_red_flag = RedFlags.get_red_flag(update_flag.get_id())
-    print(updated_red_flag)
     return jsonify({'status': 200, 'data':
                     [updated_red_flag[0].to_dict()]})
 
@@ -68,6 +69,8 @@ def update_red_flag_location(flag_id, query):
     data = request.get_json()
     validate_keys(data)
     existing_flag = get_red_flag_by_Id(flag_id)
+    validate_is_owner(existing_flag, data['user_id'])
+    validate_is_modifiable(existing_flag)
 
     data['flag_id'] = flag_id
     red_flag = RedFlag(**data)
@@ -82,9 +85,14 @@ def update_red_flag_location(flag_id, query):
 
 @app.route('/api/v1/redflag/<int:flag_id>', methods=['DELETE'])
 def delete_red_flag(flag_id):
-    red_flag = get_red_flag_by_Id(flag_id)
+    data = request.get_json()
+    validate_keys(data)    
 
-    RedFlags.delete_red_flag(red_flag[0])
+    existing_flag = get_red_flag_by_Id(flag_id)
+    validate_is_owner(existing_flag, data['user_id'])
+    validate_is_modifiable(existing_flag)
+
+    RedFlags.delete_red_flag(existing_flag[0])
 
     success_response = {
         'id': flag_id,
@@ -103,8 +111,19 @@ def get_red_flag_by_Id(flag_id):
 def validate_keys(data):
     try:
         ValidateRedFlags.has_required_keys(data)
-    except KeyError:
+    except KeyError or TypeError:
         abort(400)
+
+
+def validate_is_owner(existing_red_flag, flag_id):
+    if existing_red_flag[0].flag_id is not flag_id:
+        abort(401)
+
+
+def validate_is_modifiable(existing_flag):
+    print(existing_flag[0].status.upper())
+    if existing_flag[0].status.upper() != "PENDING":
+        abort(403)
 
 
 @app.errorhandler(404)
@@ -115,3 +134,13 @@ def not_found(error):
 @app.errorhandler(400)
 def bad_request(error):
     return jsonify({'status': 400, 'error': 'Bad Request'}), 400
+
+
+@app.errorhandler(401)
+def bad_request(error):
+    return jsonify({'status': 401, 'error': 'Unauthorised'}), 401
+
+
+@app.errorhandler(403)
+def bad_request(error):
+    return jsonify({'status': 403, 'error': 'Forbidden'}), 403

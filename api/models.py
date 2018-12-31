@@ -33,8 +33,9 @@ class RedFlags():
         return existing_red_flag
 
     @staticmethod
-    def put_red_flag(existing_flag, update_flag):        
-        keys = ['title', 'location', 'image', 'video', 'date', 'comment']
+    def put_red_flag(existing_flag, update_flag):
+        keys = ['title', 'location', 'images', 'videos', 'date', 'comment',
+                'status']
         for key in keys:
             if hasattr(update_flag, key):
                 setattr(existing_flag[0], key, getattr(update_flag, key))
@@ -59,21 +60,18 @@ class RedFlag():
         self.date = kwags['date']
         self.comment = kwags['comment']
         self.user_id = kwags['user_id']
-        self.location = kwags['location']     
-        if 'image' in kwags:
-            self.image = kwags['image']
-        if 'video' in kwags:
-            self.video = kwags['video']
+        self.location = kwags['location']
+        self.status = kwags['status']
+        if 'images' in kwags:
+            self.image = kwags['images']
+        if 'videos' in kwags:
+            self.video = kwags['videos']
 
     def get_id(self):
         return self.flag_id
 
     def to_string(self):
-        return f'{self.flag_id}, {self.title}, {self.comment}, {self.date}, {self.location}'
+        return f'{self.flag_id}, {self.title}, {self.comment}, {self.date}, {self.location}, {self.status}'
 
     def to_dict(self):
         return self.__dict__
-
-
-
-    
