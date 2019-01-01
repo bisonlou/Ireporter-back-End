@@ -1,55 +1,7 @@
 from flask import json
 
-db = []
-
-
-class RedFlags():
-    def post_red_flag(self, red_flag):
-        db.append(red_flag)
-
-    @staticmethod
-    def count():
-        return len(db)
-
-    def get_next_flag_id(self):
-        return self.count() + 1
-
-    @staticmethod
-    def get_all():
-        # covert flag items to dictionaties
-        return [RedFlag.__dict__ for RedFlag in db]
-
-    @staticmethod
-    def remove_all():
-        db.clear()
-
-    @staticmethod
-    def get_red_flag(flag_id):
-        # covert flag item to dictionaties
-        existing_red_flag = [red_flag for red_flag in
-                             db if red_flag.get_id() == flag_id]
-        if len(existing_red_flag) == 0:
-            raise ValueError
-        return existing_red_flag
-
-    @staticmethod
-    def put_red_flag(existing_flag, update_flag):
-        keys = ['title', 'location', 'images', 'videos', 'date', 'comment',
-                'status']
-        for key in keys:
-            if hasattr(update_flag, key):
-                setattr(existing_flag[0], key, getattr(update_flag, key))
-
-    @staticmethod
-    def patch_red_flag(existing_red_flag, red_flag, key):
-        setattr(existing_red_flag[0], key, getattr(red_flag, key))
-
-    @staticmethod
-    def delete_red_flag(red_flag):
-        found_red_flag = RedFlags.get_red_flag(red_flag.get_id())
-        if found_red_flag == 0:
-            return 404
-        db.remove(found_red_flag[0])
+redflag_table = []
+user_table = []
 
 
 class RedFlag():
@@ -63,9 +15,9 @@ class RedFlag():
         self.location = kwags['location']
         self.status = kwags['status']
         if 'images' in kwags:
-            self.image = kwags['images']
+            self.images = kwags['images']
         if 'videos' in kwags:
-            self.video = kwags['videos']
+            self.videos = kwags['videos']
 
     def get_id(self):
         return self.flag_id
@@ -75,3 +27,94 @@ class RedFlag():
 
     def to_dict(self):
         return self.__dict__
+
+
+class RedFlagServices():
+
+    def post_red_flag(self, red_flag):
+        redflag_table.append(red_flag)
+
+    def count(self):
+        return len(redflag_table)
+
+    def get_next_flag_id(self):
+        return self.count() + 1
+
+    def get_all(self, user_id):
+        # check if user is admin
+        user_services = UserServices()
+        if user_services.user_is_admin(user_id):
+            return [red_flag.__dict__ for red_flag in redflag_table]
+        # covert flag items to dictionaties
+        return [red_flag.__dict__ for red_flag in redflag_table
+                if red_flag.user_id == user_id]
+
+    def remove_all(self):
+        redflag_table.clear()
+
+    def get_red_flag(self, flag_id):
+        # covert flag item to dictionaties
+        existing_red_flag = [red_flag for red_flag in
+                             redflag_table if red_flag.get_id() == flag_id]
+        if len(existing_red_flag) == 0:
+            raise ValueError
+        return existing_red_flag
+
+    def put_red_flag(self, existing_flag, updated_flag):
+        keys = ['title', 'location', 'images', 'videos', 'date', 'comment',
+                'status']
+        for key in keys:
+            if hasattr(updated_flag, key):
+                setattr(existing_flag[0], key, getattr(updated_flag, key))
+
+    def patch_red_flag(self, existing_red_flag, red_flag, key):
+        setattr(existing_red_flag[0], key, getattr(red_flag, key))
+
+    def delete_red_flag(self, red_flag):
+        red_flag = self.get_red_flag(red_flag.get_id())
+        redflag_table.remove(red_flag[0])
+
+
+class User():
+
+    def __init__(self, **kwags):
+        self.id = kwags['id']
+        self.username = kwags['username']
+        self.password = kwags['password']
+        self.phone = kwags['phone']
+        self.admin = kwags['admin']
+
+
+class UserServices():
+
+    def add_user(self, user):
+        user_table.append(user)
+
+    def get_user_by_id(self, user_id):
+        return [user for user in user_table if user.id == user_id]
+
+    def get_user_by_username(self, username):
+        return [user for user in user_table if user.username == username]
+
+    def update_phone(self, user_id, new_phone_no):
+        user = self.get_user(user_id)
+        user[0].phone = new_phone_no
+
+    def delete_user(self, user_id):
+        user = self.get_user(user_id)
+        user_table.remove(user[0])
+
+    def user_is_admin(self, user_id):
+        user = self.get_user_by_id(user_id)
+        return user[0].admin
+
+    def promote_user(self, user_id):
+        user = self.get_user_by_id(user_id)
+        user[0].admin = True
+
+    def count(self):
+        return len(user_table)
+
+    def remove_all(self):
+        user_table.clear()
+
