@@ -1,5 +1,4 @@
 from flask import jsonify
-from api.models import RedFlags
 
 
 class ValidateRedFlags():
@@ -11,7 +10,7 @@ class ValidateRedFlags():
             if key not in red_flag_data:
                 raise KeyError
 
-        optional_keys = ["images", "videos"]   
+        optional_keys = ["images", "videos"]
         for key in optional_keys:
             if key in red_flag_data:
                 if type(red_flag_data[key]) is not list:
