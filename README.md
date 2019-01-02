@@ -12,7 +12,7 @@ To access the app, browse to https://bisonlou.github.io/ireporter/UI/login.html 
 
 **Contributers**
 ```
-##### Innocent Lou <bisonlou@gmail.com>
+Innocent Lou <bisonlou@gmail.com>
 
 ```
 
