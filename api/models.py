@@ -23,8 +23,8 @@ class RedFlag():
         return self.flag_id
 
     def to_string(self):
-        return f'{self.flag_id}, {self.title}, {self.comment}, {self.date},
-        {self.location}, {self.status}'
+        return f"""{self.flag_id}, {self.title}, {self.comment}, {self.date},
+        {self.location}, {self.status}"""
 
     def to_dict(self):
         return self.__dict__
@@ -77,6 +77,7 @@ class RedFlagServices():
     def delete_red_flag(self, red_flag):
         red_flag = self.get_red_flag(red_flag.get_id())
         redflag_table.remove(red_flag[0])
+
 
 
 class User():

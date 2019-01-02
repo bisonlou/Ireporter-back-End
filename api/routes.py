@@ -42,6 +42,7 @@ def add_red_flag():
 
     data['flag_id'] = flag_id
     data['user_id'] = user_id
+    data['status'] = 'Pending'
     validate_keys(data)
 
     red_flag = RedFlag(**data)
