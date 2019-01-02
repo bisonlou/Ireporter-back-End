@@ -14,7 +14,7 @@ To access th api, browse to https://bisonlou.herokuapp.com/ register and login
 
 **Contributers**
 ```
-##### Innocent Lou <bisonlou@gmail.com>
+Innocent Lou <bisonlou@gmail.com>
 ```
 
 **License**
