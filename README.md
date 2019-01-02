@@ -4,11 +4,33 @@
 #### A web app to aid government and citizens reduce corruption, and holding leaders and representatives honest and efficient.
 
 
-**Installation**
-```
+Installation
+------------
 To access the UI, browse to https://bisonlou.github.io/ireporter/UI/login.html.
+To access th api, browse to https://bisonlou.herokuapp.com/ using postman
 
-To access th api, browse to https://bisonlou.herokuapp.com/ register and login
+***To register***
+``` {.sourceCode .bash}
+/api/v1/register
+
+{
+    "username": "your-email",
+    "password": "your-password",
+    "phone": "your-phone-no"
+}
+
+```
+
+***To login***
+``` {.sourceCode .bash}
+/api/v1/login
+
+{
+    "username": "your-email",
+    "password": "your-password"
+}
+
+and copy your access token.
 
 ```
 
