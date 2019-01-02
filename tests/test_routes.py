@@ -59,10 +59,8 @@ class TestRoutes(unittest.TestCase):
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
-                       {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}
-                       ],
-            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
-            'status': 'Pending'
+                       {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         red_flag_2 = {
@@ -71,8 +69,7 @@ class TestRoutes(unittest.TestCase):
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
-            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
-            'status': 'Resolved'
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         self.test_client.post(
@@ -84,7 +81,8 @@ class TestRoutes(unittest.TestCase):
 
         self.test_client.post(
             '/api/v1/redflag',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_2)
         )
@@ -106,8 +104,7 @@ class TestRoutes(unittest.TestCase):
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
-            'videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}],
-            'status': 'Pending'
+            'videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}]
         }
 
         response = self.test_client.post(
@@ -131,13 +128,13 @@ class TestRoutes(unittest.TestCase):
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'images': 'photo_0979.jpg',
-            'videos': 'mov_0987.mp4',
-            'status': 'Resolved',
+            'videos': 'mov_0987.mp4'
         }
 
         response = self.test_client.post(
             '/api/v1/redflag',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
             )
@@ -200,7 +197,7 @@ class TestRoutes(unittest.TestCase):
             "location": "(0.00000,0.00000)",
             "images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
             "videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
-            'status': 'Resolved'
+            "status": "Under investigation"
         }
 
         response = self.test_client.put(
@@ -227,7 +224,7 @@ class TestRoutes(unittest.TestCase):
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
-            'status': 'Resolved'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.put(
@@ -253,7 +250,7 @@ class TestRoutes(unittest.TestCase):
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Resolved'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.put(
@@ -273,18 +270,29 @@ class TestRoutes(unittest.TestCase):
         Test updating a red flag which has already been resolved
         """
         red_flag = {
-            'title': 'Bribery',
-            'comment': 'Police officer at CPS Badge #123',
-            'date': '2018-01-01',
-            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
-            'location': '(0.00000, 0.0000)',
-            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Under Investigation'
+            'date': '2018-12-24',
+            'title': 'Police Officer',
+            'comment': 'Police officer at CPS Badge #162',
+            'location': '(-65.712557, -15.000182)',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
+                       {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'status': 'Under investigation'
         }
+        # change the status of red flag 1
+        self.test_client.patch(
+            '/api/v1/redflag/1/status',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
+            content_type='application/json',
+            data=json.dumps(red_flag)
+        )
 
+        # try updating a red flag whose status is now 'under investigation'
         response = self.test_client.put(
-            '/api/v1/redflag/2',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            '/api/v1/redflag/1',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -305,12 +313,13 @@ class TestRoutes(unittest.TestCase):
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Resolved'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.put(
             '/api/v1/redflag/1',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -329,7 +338,7 @@ class TestRoutes(unittest.TestCase):
             'comment': 'Police officer at CPS Badge #123',
             'date': '2018-01-01',
             'location': '(0.00000, 0.0000)',
-            'status': 'Pending'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.put(
@@ -355,7 +364,7 @@ class TestRoutes(unittest.TestCase):
             'location': '(0.00000, 0.0000)',
             'title': 'Police Officer #123',
             'videos':  [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
-            'status': 'Pending'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.patch(
@@ -385,7 +394,7 @@ class TestRoutes(unittest.TestCase):
             'location': '(0.00000, 0.0000)',
             'title': 'Police Officer #123',
             'videos': [{'id': 1, 'name': 'video_0979.jpg', 'size': 234}],
-            'status': 'Pending'
+            'status': 'Under investigation'
         }
         response = self.test_client.patch(
             '/api/v1/redflag/1/comment',
@@ -399,7 +408,8 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(
             (message['data'][0]['message']),
             'Updated red-flag record’s comment')
-        self.assertEquals(self.red_flag_services.get_red_flag(1)[0].comment, 'Took a bribe')
+        self.assertEquals(self.red_flag_services.get_red_flag(1)[0].comment,
+                          'Took a bribe')
         self.assertEqual(response.status_code, 200)
 
     def test_delete_red_flag(self):
@@ -413,7 +423,7 @@ class TestRoutes(unittest.TestCase):
             'location': '(0.00000, 0.0000)',
             'title': 'Police Officer #123',
             'videos': [{'id': 1, 'name': 'video_0979.jpg', 'size': 234}],
-            'status': 'Pending'
+            'status': 'Under investigation'
         }
 
         response = self.test_client.delete(
@@ -442,7 +452,7 @@ class TestRoutes(unittest.TestCase):
             'location': '(0.00000, 0.0000)',
             'title': 'Police Officer #123',
             'videos': [{'id': 1, 'name': 'video_0979.jpg', 'size': 234}],
-            'status': 'Pending'
+            'status': 'Under investigation'
         }
         response = self.test_client.delete(
             '/api/v1/redflag/10',
@@ -502,4 +512,3 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['message'],
                          'User created')
         self.assertEqual(response.status_code, 201)
-

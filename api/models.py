@@ -28,6 +28,7 @@ class RedFlag():
     def to_dict(self):
         return self.__dict__
 
+    
 
 class RedFlagServices():
 
@@ -120,4 +121,3 @@ class UserServices():
 
     def remove_all(self):
         user_table.clear()
-
