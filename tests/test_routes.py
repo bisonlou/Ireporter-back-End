@@ -84,7 +84,8 @@ class TestRoutes(unittest.TestCase):
 
         self.test_client.post(
             '/api/v1/redflag',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_2)
         )
@@ -284,7 +285,8 @@ class TestRoutes(unittest.TestCase):
 
         response = self.test_client.put(
             '/api/v1/redflag/2',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -310,7 +312,8 @@ class TestRoutes(unittest.TestCase):
 
         response = self.test_client.put(
             '/api/v1/redflag/1',
-            headers={'Authorization': 'Bearer ' + self.token_2['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -399,7 +402,8 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(
             (message['data'][0]['message']),
             'Updated red-flag record’s comment')
-        self.assertEquals(self.red_flag_services.get_red_flag(1)[0].comment, 'Took a bribe')
+        self.assertEquals(self.red_flag_services.get_red_flag(1)[0].comment,
+                          'Took a bribe')
         self.assertEqual(response.status_code, 200)
 
     def test_delete_red_flag(self):
@@ -502,4 +506,3 @@ class TestRoutes(unittest.TestCase):
         self.assertEqual(message['data'][0]['message'],
                          'User created')
         self.assertEqual(response.status_code, 201)
-

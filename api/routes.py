@@ -1,9 +1,9 @@
 import datetime
+import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, json, jsonify, abort
 from api.models import RedFlag, RedFlagServices, User, UserServices
 from api.Validator import ValidateRedFlags
-import uuid
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
@@ -23,12 +23,12 @@ user_services = UserServices()
 def index():
     return jsonify({
         'greeting': 'Welcome to iReporter',
-        'post flag': 'https://bisonlou.herokuapp.com/api/v1/redflag',
-        'get flags': 'https://bisonlou.herokuapp.com/api/v1/redflags',
-        'get flag': 'https://bisonlou.herokuapp.com/api/v1/redflag/flag_id',
-        'alter flag': 'https://bisonlou.herokuapp.com/api/v1/redflag/flag_id',
-        'update flag': 'https://bisonlou.herokuapp.com/api/v1/redflag/flag_id/key',
-        'delete flag': 'https://bisonlou.herokuapp.com/api/v1/redflag/flag_id'
+        'post flag': '/api/v1/redflag',
+        'get flags': '/api/v1/redflags',
+        'get flag': '/api/v1/redflag/flag_id',
+        'alter flag': '/api/v1/redflag/flag_id',
+        'update flag': '/api/v1/redflag/flag_id/key',
+        'delete flag': '/api/v1/redflag/flag_id'
     }), 200
 
 

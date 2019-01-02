@@ -23,7 +23,8 @@ class RedFlag():
         return self.flag_id
 
     def to_string(self):
-        return f'{self.flag_id}, {self.title}, {self.comment}, {self.date}, {self.location}, {self.status}'
+        return f'{self.flag_id}, {self.title}, {self.comment}, {self.date},
+        {self.location}, {self.status}'
 
     def to_dict(self):
         return self.__dict__
@@ -120,4 +121,3 @@ class UserServices():
 
     def remove_all(self):
         user_table.clear()
-
