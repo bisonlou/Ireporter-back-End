@@ -4,7 +4,10 @@ from flask import Flask, request, json, jsonify, abort
 from api.models import RedFlag, RedFlagServices, User, UserServices
 from api.Validator import ValidateRedFlags
 import uuid
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 
 app = Flask(__name__)

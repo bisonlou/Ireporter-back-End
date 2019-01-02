@@ -31,6 +31,9 @@ class RedFlag():
 
 class RedFlagServices():
 
+    def __init__(self):
+        pass
+
     def post_red_flag(self, red_flag):
         redflag_table.append(red_flag)
 
