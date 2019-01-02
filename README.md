@@ -6,13 +6,13 @@
 
 Installation
 ------------
-To access the UI, browse to https://bisonlou.github.io/ireporter/UI/login.html.
-To access th api, browse to https://bisonlou.herokuapp.com/ using postman
+To access the api, browse to https://bisonlou.herokuapp.com/ using postman
 
 ***To register***
 ``` {.sourceCode .bash}
 /api/v1/register
 
+Body - application/json
 {
     "username": "your-email",
     "password": "your-password",
@@ -25,6 +25,7 @@ To access th api, browse to https://bisonlou.herokuapp.com/ using postman
 ``` {.sourceCode .bash}
 /api/v1/login
 
+Body - application/json
 {
     "username": "your-email",
     "password": "your-password"
@@ -34,13 +35,90 @@ and copy your access token.
 
 ```
 
-**Contributers**
+***To post a red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flag
+
+Body - application/json
+{
+    "title": "flag-title",
+    "comment": "flag-body",
+    "location": "(0.000000, 15.00000)",
+    "images": "[image_name.jpg, 300]",
+    "videos": "[video_name.mov, 1024]"
+}
+
+use the access token obtained at login to authenticate.
+
 ```
+
+***To get a red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flag/1
+
+use the access token obtained at login to authenticate.
+
+```
+
+***To get all red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flags/
+
+use the access token obtained at login to authenticate.
+
+```
+
+***To put a red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flags/1
+
+Body - application/json
+{
+    "title": "flag-title",
+    "comment": "flag-body",
+    "location": "(0.000000, 15.000000)",
+    "images": "[image_name.jpg, 300]",
+    "videos": "[video_name.mov, 1024]"
+    "status": "Pending"
+}
+
+use the access token obtained at login to authenticate.
+
+```
+
+***To patch a red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flags/1/location
+
+Body - application/json
+{
+    "title": "flag-title",
+    "comment": "flag-body",
+    "location": "(0.000000, 0.000000)",
+    "images": "[image_name.jpg, 300]",
+    "videos": "[video_name.mov, 1024]"
+    "status": "Pending"
+}
+
+use the access token obtained at login to authenticate.
+
+```
+
+***To delete a red flag***
+``` {.sourceCode .bash}
+/api/v1/red_flags/1
+
+use the access token obtained at login to authenticate.
+
+```
+
+**Contributers**
+----------------
 Innocent Lou <bisonlou@gmail.com>
 
 How to Contribute
 -----------------
-
+```
 1.  Check for open issues or open a fresh issue to start a discussion
     around a feature idea or a bug.
 2.  Clone [the repository](https://github.com/bisonlou/ireporter.git) on
@@ -53,6 +131,6 @@ How to Contribute
 ```
 
 **License**
-```
+------------------
 Read only
-```
+
