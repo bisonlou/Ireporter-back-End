@@ -12,23 +12,11 @@ user_services = UserServices()
 class IncidentController():
 
     def create_incident(self, data, user_id, incident_type):
-        data['user_id'] = user_id
+        data['createdBy'] = user_id
         data['status'] = 'Pending'
 
         if not incident_validator.has_required_keys(data):
             abort(400)
-
-        list_values = ['images', 'videos']
-        string_values = [data['title'], data['comment'],
-                         data['date']]
-
-        for value in list_values:
-            if not incident_validator.is_typeof_list(data, value):
-                abort(400)
-
-        for value in string_values:
-            if not incident_validator.is_typeof_string(value):
-                abort(400)
 
         incident_id = incident_services.get_next_id(incident_type)
 
@@ -45,6 +33,7 @@ class IncidentController():
         try:
             incident = incident_services.get_incident(
                                     incident_id, incident_type)
+
             if not incident_validator.is_owner(incident, user_id):
                 abort(403)
 
@@ -61,23 +50,11 @@ class IncidentController():
         return jsonify({'status': 200, 'data': incidents})
 
     def put_incident(self, data, incident_id, incident_type, user_id):
-        data['user_id'] = user_id
+        data['createdBy'] = user_id
         data['id'] = incident_id
 
         if not incident_validator.has_required_keys(data):
-            abort(400)
-
-        list_values = ['images', 'videos']
-        string_values = [data['title'], data['comment'],
-                         data['date']]
-
-        for value in list_values:
-            if not incident_validator.is_typeof_list(data, value):
-                abort(400)
-
-        for value in string_values:
-            if not incident_validator.is_typeof_string(value):
-                abort(400)
+            abort(400)      
 
         update_incident = Incident(**data)
 
@@ -105,33 +82,38 @@ class IncidentController():
 
     def patch_incident(self, data, incident_id,
                        update_key, incident_type, user_id):
-        data['user_id'] = user_id
+        data['createdBy'] = user_id
+
         if not incident_validator.has_required_keys(data):
             abort(400)
+
         try:
             existing_incident = incident_services.get_incident(
                          incident_id, incident_type)
+
+            if not incident_validator.is_owner(existing_incident, user_id):
+                abort(401)
+            if not incident_validator.is_modifiable(existing_incident):
+                abort(403)
+
+            data['id'] = incident_id
+            update_incident = Incident(**data)
+
+            incident_services.patch_incident(existing_incident,
+                                             update_incident, update_key)
+            success_response = {
+                'id': incident_id,
+                'message': f'Updated {incident_type} record’s {update_key}'
+            }
+
+            return jsonify({'status': 200, 'data': success_response}), 200
+
         except ValueError:
             abort(404)
-        if not incident_validator.is_owner(existing_incident, user_id):
-            abort(401)
-        if not incident_validator.is_modifiable(existing_incident):
-            abort(403)
-
-        data['id'] = incident_id
-        update_incident = Incident(**data)
-
-        incident_services.patch_incident(existing_incident,
-                                         update_incident, update_key)
-        success_response = {
-            'id': incident_id,
-            'message': f'Updated {incident_type} record’s {update_key}'
-        }
-
-        return jsonify({'status': 200, 'data': success_response}), 200
 
     def delete_incident(self, incident_id, user_id, incident_type):
         try:
+
             existing_incident = incident_services.get_incident(
                          incident_id, incident_type)
             if not incident_validator.is_owner(existing_incident, user_id):
@@ -145,6 +127,7 @@ class IncidentController():
                 'id': incident_id,
                 'message': f'{incident_type} record has been deleted'}
             return jsonify({'status': 200, 'data': success_response}), 200
+
         except ValueError:
             abort(404)
 
@@ -153,11 +136,11 @@ class IncidentController():
         return jsonify({'status': 400, 'error': 'Bad Request'}), 400
 
     @app.errorhandler(401)
-    def bad_request(error):
+    def unauthorised(error):
         return jsonify({'status': 401, 'error': 'Unauthorised'}), 401
 
     @app.errorhandler(403)
-    def bad_request(error):
+    def forbiden(error):
         return jsonify({'status': 403, 'error': 'Forbidden'}), 403
 
     @app.errorhandler(404)

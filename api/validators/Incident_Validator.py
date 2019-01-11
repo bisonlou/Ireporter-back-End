@@ -3,28 +3,26 @@ from flask import jsonify
 
 class ValidateIncident():
 
-    def has_required_keys(self, incident_data):
-        required_keys = ["date", "title", "comment", "location", "status",
-                         "user_id"]
+    def has_required_keys(self, data):
+        required_keys = ["createdOn", "title", "comment",
+                         "location", "status", "type"]
+
+        list_values = ['Images', 'Videos']
+        string_values = ['title', 'comment', 'createdOn', 'type']
+
         for key in required_keys:
-            if key not in incident_data:
+            if key not in data:
                 return False
-        return True
 
-    def is_typeof_list(self, data, value):
-        if value in data:
-            if type(data[value]) is not list:
+        for value in string_values:
+            if type(data[value]) is not str:
                 return False
-        return True
 
-    def is_typeof_string(self, value):
-        if type(value) is not str:
-            return False
-        return True
+        for value in list_values:
+            if value in data:
+                if type(data[value]) is not list:
+                    return False
 
-    def is_typeof_int(self, value):
-        if type(value) is not int:
-            return False
         return True
 
     def is_modifiable(self, incident):
@@ -33,6 +31,6 @@ class ValidateIncident():
         return True
 
     def is_owner(self, incident, user_id):
-        if incident.user_id != user_id:
+        if incident.created_by != user_id:
             return False
         return True

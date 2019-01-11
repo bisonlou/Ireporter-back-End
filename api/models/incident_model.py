@@ -9,15 +9,16 @@ class Incident():
     def __init__(self, **kwags):
         self.id = kwags['id']
         self.title = kwags['title']
-        self.date = kwags['date']
+        self.created_on = kwags['createdOn']
         self.comment = kwags['comment']
-        self.user_id = kwags['user_id']
+        self.created_by = kwags['createdBy']
         self.location = kwags['location']
         self.status = kwags['status']
+        self.type = kwags['type']
         if 'images' in kwags:
-            self.images = kwags['images']
+            self.images = kwags['Images']
         if 'videos' in kwags:
-            self.videos = kwags['videos']
+            self.videos = kwags['Videos']
 
     def get_id(self):
         return self.id
@@ -54,15 +55,16 @@ class IncidentServices():
         if incident_type == 'red-flag':
             if is_admin:
                 return [incident.__dict__ for incident in redflag_table]
+
             return [incident.__dict__ for incident in redflag_table
-                    if incident.user_id == user_id]
+                    if incident.created_by == user_id]
         elif incident_type == 'intervention':
             if is_admin:
                 return [incident.__dict__ for
                         incident in intervention_table]
             return [incident.__dict__ for
                     incident in intervention_table if
-                    incident.user_id == user_id]
+                    incident.created_by == user_id]
 
     def remove_all(self, incident_type):
         if incident_type == 'red-flag':
@@ -86,7 +88,7 @@ class IncidentServices():
             return incident[0]
 
     def put_incident(self, existing_incident, update_incident, incident_type):
-        keys = ['title', 'location', 'images', 'videos', 'date', 'comment',
+        keys = ['title', 'location', 'Images', 'Videos', 'createdOn', 'comment',
                 'status']
         for key in keys:
             if hasattr(update_incident, key):
