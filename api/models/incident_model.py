@@ -74,18 +74,16 @@ class IncidentServices():
 
     def get_incident(self, incident_id, incident_type):
         # covert flag item to dictionaties
+        incidents = []
         if incident_type == 'red-flag':
-            incident = [incident for incident in
-                        redflag_table if incident.id == incident_id]
-            if len(incident) == 0:
-                raise ValueError
-            return incident[0]
+            incidents = [incident for incident in
+                         redflag_table if incident.id == incident_id]
         elif incident_type == 'intervention':
-            incident = [incident for incident in
-                        intervention_table if incident.id == incident_id]
-            if len(incident) == 0:
-                raise ValueError
-            return incident[0]
+            incidents = [incident for incident in
+                         intervention_table if incident.id == incident_id]
+
+        if len(incidents) > 0:
+            return incidents[0]
 
     def put_incident(self, existing_incident, update_incident, incident_type):
         keys = ['title', 'location', 'Images', 'Videos', 'createdOn', 'comment',

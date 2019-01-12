@@ -26,31 +26,39 @@ def index():
 def add_red_flag():
     data = request.get_json()
     user_id = get_jwt_identity()
-    return red_flag_controller.create_incident(data, user_id, incident_type)
+    kwags = dict(data=data, user_id=user_id, incident_type=incident_type)
+
+    return red_flag_controller.create_incident(**kwags)
 
 
 @app.route('/api/v1/redflags', methods=['GET'])
 @jwt_required
 def get_red_flags():
     user_id = get_jwt_identity()
-    return red_flag_controller.get_all_incidents(user_id, incident_type)
+    kwags = dict(user_id=user_id, incident_type=incident_type)
+
+    return red_flag_controller.get_all_incidents(**kwags)
 
 
-@app.route('/api/v1/redflags/<int:flag_id>', methods=['GET'])
+@app.route('/api/v1/redflags/<int:incident_id>', methods=['GET'])
 @jwt_required
-def get_red_flag(flag_id):
+def get_red_flag(incident_id):
     user_id = get_jwt_identity()
-    return red_flag_controller.get_incident(flag_id, user_id, incident_type)
+    kwags = dict(incident_id=incident_id,
+                 user_id=user_id, incident_type=incident_type)
+
+    return red_flag_controller.get_incident(**kwags)
 
 
-@app.route('/api/v1/redflags/<int:flag_id>', methods=['PUT'])
+@app.route('/api/v1/redflags/<int:incident_id>', methods=['PUT'])
 @jwt_required
-def alter_red_flag(flag_id):
+def alter_red_flag(incident_id):
     data = request.get_json()
     user_id = get_jwt_identity()
+    kwags = dict(data=data, user_id=user_id,
+                 incident_type=incident_type, incident_id=incident_id)
 
-    return red_flag_controller.put_incident(
-        data, flag_id, incident_type, user_id)
+    return red_flag_controller.put_incident(**kwags)
 
 
 @app.route('/api/v1/redflags/<int:incident_id>/<string:query>',
@@ -59,14 +67,18 @@ def alter_red_flag(flag_id):
 def update_red_flag_location(incident_id, query):
     data = request.get_json()
     user_id = get_jwt_identity()
+    kwags = dict(data=data, user_id=user_id,
+                 incident_type=incident_type, incident_id=incident_id,
+                 query=query)
 
-    return red_flag_controller.patch_incident(
-        data, incident_id, query, incident_type, user_id)
+    return red_flag_controller.patch_incident(**kwags)
 
 
 @app.route('/api/v1/redflags/<int:incident_id>', methods=['DELETE'])
 @jwt_required
 def delete_red_flag(incident_id):
     user_id = get_jwt_identity()
-    return red_flag_controller.delete_incident(
-        incident_id, user_id, incident_type)
+    kwags = dict(user_id=user_id, incident_type=incident_type,
+                 incident_id=incident_id)
+
+    return red_flag_controller.delete_incident(**kwags)
