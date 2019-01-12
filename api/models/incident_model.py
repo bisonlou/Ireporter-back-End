@@ -52,19 +52,18 @@ class IncidentServices():
 
     def get_all(self, user_id, is_admin, incident_type):
         # check if user is admin
-        if incident_type == 'red-flag':
-            if is_admin:
-                return [incident.__dict__ for incident in redflag_table]
-
+        if incident_type == 'red-flag' and is_admin:
+            return [incident.__dict__ for incident in redflag_table]
+        elif incident_type == 'red-flag' and not is_admin:
             return [incident.__dict__ for incident in redflag_table
                     if incident.created_by == user_id]
-        elif incident_type == 'intervention':
-            if is_admin:
-                return [incident.__dict__ for
-                        incident in intervention_table]
+
+        if incident_type == 'intervention' and is_admin:
             return [incident.__dict__ for
-                    incident in intervention_table if
-                    incident.created_by == user_id]
+                    incident in intervention_table]
+        if incident_type == 'intervention' and not is_admin:
+            return [incident.__dict__ for incident in intervention_table
+                    if incident.created_by == user_id]
 
     def remove_all(self, incident_type):
         if incident_type == 'red-flag':

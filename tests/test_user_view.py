@@ -63,7 +63,7 @@ class TestUserView(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertDictContainsSubset(
-            {'min-length': 'Password should be 6 or more characters'},
+            {'length': 'Password should be between 6 and 12 characters'},
             message['data'])
 
     def test_register_user_with_missing_keys(self):
@@ -137,7 +137,7 @@ class TestUserView(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertDictContainsSubset(
-            {'max-length': 'Password should be 12 or less characters'},
+            {'length': 'Password should be between 6 and 12 characters'},
             message['data'])
 
     def test_login(self):
