@@ -10,7 +10,7 @@ class UserValidator():
                 'date_registered', 'other_names']
 
         for key in keys:
-            if key not in data:                
+            if key not in data:
                 return False
 
         required_keys = ['user_name', 'first_name', 'last_name',
@@ -43,21 +43,13 @@ class UserValidator():
     def has_login_required_fields(self, data):
         required_keys = ['email', 'password']
 
-        # for key in required_keys:
-        #     if key not in data:
-        #         return False
-        if 'email' not in data:
-            return False
-        if 'password' not in data:
-            return False
+        for key in required_keys:
+            if key not in data:
+                return False
 
-        # for key in required_keys:
-        #     if not data[key]:
-        #         return False
-        if not data['email']:
-            return False
-        if not data['password']:
-            return False
+        for key in required_keys:
+            if not data[key]:
+                return False
 
         return True
 
