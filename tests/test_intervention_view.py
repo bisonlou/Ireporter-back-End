@@ -65,24 +65,24 @@ class TestInterventionView(unittest.TestCase):
         self.token_2 = json.loads(response_2.data)
 
         intervention_1 = {
-            'createdOn': '2018-12-24',
+            'created_on': '2018-12-24',
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'intervention',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
                        {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}],
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         intervention_2 = {
-            'createdOn': '2018-12-12',
+            'created_on': '2018-12-12',
             'title': 'Magistrate',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'intervention',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         self.test_client.post(
@@ -113,13 +113,13 @@ class TestInterventionView(unittest.TestCase):
         Test adding a intervention with expected details
         """
         intervention = {
-            'createdOn': '2018-12-24',
+            'created_on': '2018-12-24',
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'intervention',
-            'Images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
-            'Videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}]
+            'images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
+            'videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}]
         }
 
         response = self.test_client.post(
@@ -143,13 +143,13 @@ class TestInterventionView(unittest.TestCase):
         some key values not strings
         """
         intervention = {
-            'createdOn': '2018-12-12',
+            'created_on': '2018-12-12',
             'title': 162,
             'comment': 'Took a bribe',
             'location': '(-65.712557, -15.000182)',
             'type': 'intervention',
-            'Images': 'photo_0979.jpg',
-            'Videos': 'mov_0987.mp4'
+            'images': 'photo_0979.jpg',
+            'videos': 'mov_0987.mp4'
         }
 
         response = self.test_client.post(
@@ -214,11 +214,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             "title": "Bribery",
             "comment": "Police officer at CPS Badge #123",
-            "createdOn": "2018-01-01",
+            "created_on": "2018-01-01",
             "location": "(0.00000,0.00000)",
             "type": "intervention",
-            "Images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
-            "Videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
+            "images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
+            "videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
             "status": "Under investigation"
         }
 
@@ -242,11 +242,11 @@ class TestInterventionView(unittest.TestCase):
         """
         intervention = {
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
             'status': 'Under investigation'
         }
 
@@ -270,11 +270,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
 
@@ -298,11 +298,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
         # change the status of intervention 1
@@ -335,11 +335,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Pending'
         }
 
@@ -363,7 +363,7 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
+            'created_on': '2018-01-01',
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
             'status': 'Under investigation'
@@ -387,11 +387,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
 
@@ -419,11 +419,11 @@ class TestInterventionView(unittest.TestCase):
         intervention = {
             'title': 'Bribery at kabalagala juction',
             'comment': 'Took a bribe',
-            'createdOn': '2018-11-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-11-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00500, 0.0000)',
             'type': 'intervention',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
         response = self.test_client.patch(
