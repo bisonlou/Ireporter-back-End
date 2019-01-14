@@ -10,7 +10,7 @@ class UserValidator():
                 'date_registered', 'other_names']
 
         for key in keys:
-            if key not in data:                
+            if key not in data:
                 return False
 
         required_keys = ['user_name', 'first_name', 'last_name',
@@ -25,10 +25,8 @@ class UserValidator():
     def validate_password(self, data):
         password = data['password']
         errors = {}
-        if len(password) < 6:
-            errors['min-length'] = 'Password should be 6 or more characters'
-        if len(password) > 12:
-            errors['max-length'] = 'Password should be 12 or less characters'
+        if len(password) < 6 or len(password) > 12:
+            errors['length'] = 'Password should be between 6 and 12 characters'
         if not re.search("[a-z]", password):
             errors['lower-char'] = 'Password should contain atleast 1 lower case character'
         if not re.search("[0-9]", password):
@@ -43,21 +41,13 @@ class UserValidator():
     def has_login_required_fields(self, data):
         required_keys = ['email', 'password']
 
-        # for key in required_keys:
-        #     if key not in data:
-        #         return False
-        if 'email' not in data:
-            return False
-        if 'password' not in data:
-            return False
+        for key in required_keys:
+            if key not in data or not data[key]:
+                return False
 
         # for key in required_keys:
         #     if not data[key]:
         #         return False
-        if not data['email']:
-            return False
-        if not data['password']:
-            return False
 
         return True
 

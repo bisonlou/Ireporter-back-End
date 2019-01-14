@@ -75,24 +75,24 @@ class TestRedFlagView(unittest.TestCase):
         self.token_2 = json.loads(response_2.data)
 
         red_flag_1 = {
-            'createdOn': '2018-12-24',
+            'created_on': '2018-12-24',
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'red-flag',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234},
                        {'id': 2, 'name': 'photo_0094.jpg', 'size': 200}],
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         red_flag_2 = {
-            'createdOn': '2018-12-12',
+            'created_on': '2018-12-12',
             'title': 'Magistrate',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'red-flag',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}]
         }
 
         self.test_client.post(
@@ -123,13 +123,13 @@ class TestRedFlagView(unittest.TestCase):
         Test adding a red flag with expected details
         """
         red_flag = {
-            'createdOn': '2018-12-24',
+            'created_on': '2018-12-24',
             'title': 'Police Officer',
             'comment': 'Police officer at CPS Badge #162',
             'location': '(-65.712557, -15.000182)',
             'type': 'red-flag',
-            'Images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
-            'Videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}]
+            'images': [{'id': 1, 'name': 'photo_0912.jpg', 'size': 134}],
+            'videos': [{'id': 1, 'name': 'video_0102.mov', 'size': 2220}]
         }
 
         response = self.test_client.post(
@@ -149,17 +149,17 @@ class TestRedFlagView(unittest.TestCase):
 
     def test_add_bad_red_flag(self):
         """
-        Test adding a red flag with Images
-        and Videos keys not of type list but string
+        Test adding a red flag with images
+        and videos keys not of type list but string
         """
         red_flag = {
-            'createdOn': '2018-12-12',
+            'created_on': '2018-12-12',
             'title': 'Police officer at CPS Badge #162',
             'comment': 'Took a bribe',
             'location': '(-65.712557, -15.000182)',
             'type': 'red-flag',
-            'Images': 'photo_0979.jpg',
-            'Videos': 'mov_0987.mp4'
+            'images': 'photo_0979.jpg',
+            'videos': 'mov_0987.mp4'
         }
 
         response = self.test_client.post(
@@ -223,11 +223,11 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             "title": "Bribery",
             "comment": "Police officer at CPS Badge #123",
-            "createdOn": "2018-01-01",
+            "created_on": "2018-01-01",
             "location": "(0.00000,0.00000)",
             "type": "red-flag",
-            "Images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
-            "Videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
+            "images": [{"id": 1, "name": "photo_0979.jpg", "size": 234}],
+            "videos": [{"id": 1, "name": "video_0002.mov", "size": 2340}],
             "status": "Under investigation"
         }
 
@@ -249,11 +249,11 @@ class TestRedFlagView(unittest.TestCase):
         """
         red_flag = {
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'Videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'video_0002.mov', 'size': 2340}],
             'status': 'Under investigation'
         }
 
@@ -277,11 +277,11 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
 
@@ -305,11 +305,11 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
         # change the status of red flag 1
@@ -342,11 +342,11 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Pending'
         }
 
@@ -370,7 +370,7 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
+            'created_on': '2018-01-01',
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
             'status': 'Under investigation'
@@ -394,7 +394,7 @@ class TestRedFlagView(unittest.TestCase):
         red_flag = {
             'title': 'Bribery',
             'comment': 'Police officer at CPS Badge #123',
-            'createdOn': '2018-01-01',
+            'created_on': '2018-01-01',
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
             'status': 'Under investigation'
@@ -424,11 +424,11 @@ class TestRedFlagView(unittest.TestCase):
         red_flag_update = {
             'title': 'Bribery',
             'comment': 'Took a bribe',
-            'createdOn': '2018-01-01',
-            'Images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'Videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
             'status': 'Under investigation'
         }
         response = self.test_client.patch(

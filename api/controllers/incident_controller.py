@@ -16,7 +16,7 @@ class IncidentController():
         user_id = kwags['user_id']
         incident_type = kwags['incident_type']
 
-        data['createdBy'] = user_id
+        data['created_by'] = user_id
         data['status'] = 'Pending'
 
         if not incident_validator.has_required_keys(data):
@@ -64,7 +64,7 @@ class IncidentController():
         incident_type = kwags['incident_type']
         incident_id = kwags['incident_id']
 
-        data['createdBy'] = user_id
+        data['created_by'] = user_id
         data['id'] = incident_id
 
         if not incident_validator.has_required_keys(data):
@@ -99,7 +99,7 @@ class IncidentController():
         incident_id = kwags['incident_id']
         update_key = kwags['query']
 
-        data['createdBy'] = user_id
+        data['created_by'] = user_id
         data['id'] = incident_id
 
         if not incident_validator.has_required_keys(data):
