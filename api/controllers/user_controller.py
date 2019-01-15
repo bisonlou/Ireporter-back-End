@@ -11,8 +11,17 @@ validator = UserValidator()
 
 
 class UserController():
+    '''
+
+    Class to handle user related routes
+
+    '''
 
     def register(self, data):
+        '''
+        Function to register a user
+
+        '''
         hashed_password = generate_password_hash(
                             data['password'], method='sha256')
         user_id = str(uuid.uuid4())
@@ -42,6 +51,12 @@ class UserController():
             abort(400)
 
     def login(self, data):
+        '''
+        Function to login a user
+        The user must be registered
+        The function returns a jason web token
+
+        '''
         if not validator.has_login_required_fields(data):
             abort(400)
 
@@ -55,6 +70,11 @@ class UserController():
         abort(401)
 
     def get_all(self, user_id):
+        '''
+        Function to return all users given a user id
+        The user should be an administrator in order to get all the uses
+
+        '''
         user = user_services.get_user_by_id(user_id)
         if not user:
             abort(404)
