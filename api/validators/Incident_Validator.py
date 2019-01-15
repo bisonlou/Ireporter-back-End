@@ -4,11 +4,11 @@ from flask import jsonify
 class ValidateIncident():
 
     def has_required_keys(self, data):
-        required_keys = ["createdOn", "title", "comment",
-                         "location", "status", "type"]
+        required_keys = ['created_on', 'title', 'comment',
+                         'location', 'status', 'type']
 
-        list_values = ['Images', 'Videos']
-        string_values = ['title', 'comment', 'createdOn', 'type']
+        list_values = ['images', 'videos']
+        string_values = ['title', 'comment', 'created_on', 'type']
 
         for key in required_keys:
             if key not in data:
@@ -26,7 +26,7 @@ class ValidateIncident():
         return True
 
     def is_modifiable(self, incident):
-        if not incident.status.upper() == "PENDING":
+        if not incident.status.upper() == 'PENDING':
             return False
         return True
 

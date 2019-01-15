@@ -11,8 +11,12 @@ user_services = UserServices()
 
 class IncidentController():
 
-    def create_incident(self, data, user_id, incident_type):
-        data['createdBy'] = user_id
+    def create_incident(self, **kwags):
+        data = kwags['data']
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+
+        data['created_by'] = user_id
         data['status'] = 'Pending'
 
         if not incident_validator.has_required_keys(data):
@@ -29,107 +33,120 @@ class IncidentController():
                             f'Created {incident_type} record'}
         return jsonify({'status': 201, 'data': [success_response]}), 201
 
-    def get_incident(self, incident_id, user_id, incident_type):
-        try:
-            incident = incident_services.get_incident(
-                                    incident_id, incident_type)
+    def get_incident(self, **kwags):
+        incident_id = kwags['incident_id']
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
 
-            if not incident_validator.is_owner(incident, user_id):
-                abort(403)
-
-            return jsonify({'status': 200, 'data': incident.to_dict()}), 200
-
-        except ValueError:
+        incident = incident_services.get_incident(
+                                incident_id, incident_type)
+        if not incident:
             abort(404)
 
-    def get_all_incidents(self, user_id, incident_type):
+        if not incident_validator.is_owner(incident, user_id):
+            abort(403)
+
+        return jsonify({'status': 200, 'data': incident.to_dict()}), 200        
+
+    def get_all_incidents(self, **kwags):
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+
         user = user_services.get_user_by_id(user_id)
         is_admin = user.is_admin
 
         incidents = incident_services.get_all(user_id, is_admin, incident_type)
         return jsonify({'status': 200, 'data': incidents})
 
-    def put_incident(self, data, incident_id, incident_type, user_id):
-        data['createdBy'] = user_id
+    def put_incident(self, **kwags):
+        data = kwags['data']
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+        incident_id = kwags['incident_id']
+
+        data['created_by'] = user_id
         data['id'] = incident_id
-
-        if not incident_validator.has_required_keys(data):
-            abort(400)      
-
-        update_incident = Incident(**data)
-
-        try:
-            existing_incident = incident_services.get_incident(
-                                incident_id, incident_type)
-
-            if not incident_validator.is_owner(existing_incident, user_id):
-                abort(401)
-
-            if not incident_validator.is_modifiable(existing_incident):
-                abort(403)
-
-            incident_services.put_incident(
-                existing_incident, update_incident, incident_type)
-
-            updated_incident = incident_services.get_incident(
-                                incident_id, incident_type)
-
-            return jsonify({'status': 200, 'data':
-                            updated_incident.to_dict()})
-
-        except ValueError:
-            abort(404)
-
-    def patch_incident(self, data, incident_id,
-                       update_key, incident_type, user_id):
-        data['createdBy'] = user_id
 
         if not incident_validator.has_required_keys(data):
             abort(400)
 
-        try:
-            existing_incident = incident_services.get_incident(
-                         incident_id, incident_type)
+        update_incident = Incident(**data)
 
-            if not incident_validator.is_owner(existing_incident, user_id):
-                abort(401)
-            if not incident_validator.is_modifiable(existing_incident):
-                abort(403)
-
-            data['id'] = incident_id
-            update_incident = Incident(**data)
-
-            incident_services.patch_incident(existing_incident,
-                                             update_incident, update_key)
-            success_response = {
-                'id': incident_id,
-                'message': f'Updated {incident_type} record’s {update_key}'
-            }
-
-            return jsonify({'status': 200, 'data': success_response}), 200
-
-        except ValueError:
+        existing_incident = incident_services.get_incident(
+                                incident_id, incident_type)
+        if not existing_incident:
             abort(404)
 
-    def delete_incident(self, incident_id, user_id, incident_type):
-        try:
+        if not incident_validator.is_owner(existing_incident, user_id):
+            abort(401)
 
-            existing_incident = incident_services.get_incident(
-                         incident_id, incident_type)
-            if not incident_validator.is_owner(existing_incident, user_id):
-                abort(401)
-            if not incident_validator.is_modifiable(existing_incident):
-                abort(403)
+        if not incident_validator.is_modifiable(existing_incident):
+            abort(403)
 
-            incident_services.delete_incident(existing_incident,
-                                              incident_type)
-            success_response = {
-                'id': incident_id,
-                'message': f'{incident_type} record has been deleted'}
-            return jsonify({'status': 200, 'data': success_response}), 200
+        incident_services.put_incident(
+            existing_incident, update_incident, incident_type)
 
-        except ValueError:
+        updated_incident = incident_services.get_incident(
+                            incident_id, incident_type)
+
+        return jsonify({'status': 200, 'data':
+                        updated_incident.to_dict()})
+
+    def patch_incident(self, **kwags):
+        data = kwags['data']
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+        incident_id = kwags['incident_id']
+        update_key = kwags['query']
+
+        data['created_by'] = user_id
+        data['id'] = incident_id
+
+        if not incident_validator.has_required_keys(data):
+            abort(400)
+
+        existing_incident = incident_services.get_incident(
+                            incident_id, incident_type)
+        if not existing_incident:
             abort(404)
+
+        if not incident_validator.is_owner(existing_incident, user_id):
+            abort(401)
+        if not incident_validator.is_modifiable(existing_incident):
+            abort(403)
+
+        update_incident = Incident(**data)
+
+        incident_services.patch_incident(existing_incident,
+                                         update_incident, update_key)
+        success_response = {
+            'id': incident_id,
+            'message': f'Updated {incident_type} record’s {update_key}'
+        }
+
+        return jsonify({'status': 200, 'data': success_response}), 200
+
+    def delete_incident(self, **kwags):
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+        incident_id = kwags['incident_id']
+
+        existing_incident = incident_services.get_incident(
+                            incident_id, incident_type)
+        if not existing_incident:
+            abort(404)
+
+        if not incident_validator.is_owner(existing_incident, user_id):
+            abort(401)
+        if not incident_validator.is_modifiable(existing_incident):
+            abort(403)
+
+        incident_services.delete_incident(existing_incident, incident_type)
+        success_response = {
+            'id': incident_id,
+            'message': f'{incident_type} record has been deleted'}
+
+        return jsonify({'status': 200, 'data': success_response}), 200
 
     @app.errorhandler(400)
     def bad_request(error):
