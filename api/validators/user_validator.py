@@ -4,7 +4,12 @@ import re
 class UserValidator():
 
     def has_required_fields(self, data):
+        '''
+        Function to check if user keys and key data is present
+        Also checks if data is in required format
+        Returns True on succes otherwise False
 
+        '''
         keys = ['user_name', 'password', 'first_name',
                 'last_name', 'email', 'phone_number',
                 'date_registered', 'other_names']
@@ -23,6 +28,11 @@ class UserValidator():
         return True
 
     def validate_password(self, data):
+        '''
+        Function to check if the given password meets minimum requrements
+        Returns a dictionary of errors
+
+        '''
         password = data['password']
         errors = {}
         if len(password) < 6 or len(password) > 12:
@@ -39,17 +49,24 @@ class UserValidator():
         return errors
 
     def has_login_required_fields(self, data):
+        '''
+        Function to check if the login data is present
+        Returns True on success otherwise False
+
+        '''
         required_keys = ['email', 'password']
 
         for key in required_keys:
             if key not in data or not data[key]:
                 return False
 
-        # for key in required_keys:
-        #     if not data[key]:
-        #         return False
-
         return True
 
     def user_is_admin(self, user):
+        '''
+        Function to check if the is an administrator
+        Return True if the user is an administrator 
+        otherwise False
+
+        '''
         return user.is_admin

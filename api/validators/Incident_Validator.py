@@ -4,8 +4,13 @@ from flask import jsonify
 class ValidateIncident():
 
     def has_required_keys(self, data):
+        '''
+        Function to check if incident keys and key dat is present
+        Also checks if data is in required format
+
+        '''
         required_keys = ['created_on', 'title', 'comment',
-                         'location', 'status', 'type']
+                         'location', 'type']
 
         list_values = ['images', 'videos']
         string_values = ['title', 'comment', 'created_on', 'type']
@@ -26,11 +31,22 @@ class ValidateIncident():
         return True
 
     def is_modifiable(self, incident):
-        if not incident.status.upper() == 'PENDING':
+        '''
+        Function to check if an incident is modifiable
+        An incident is only modifiable if its status is pending
+        Returns False if an incident is not modifiable
+
+        '''
+        if not incident.status == 0:
             return False
         return True
 
     def is_owner(self, incident, user_id):
+        '''
+        Function to check if an incident was created by a given user
+        Returns False if the user is not the incident creator
+
+        '''
         if incident.created_by != user_id:
             return False
         return True

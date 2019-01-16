@@ -9,12 +9,14 @@ user_controller = UserController()
 @app.route('/api/v1/register', methods=['POST'])
 def register_user():
     data = request.get_json()
+
     return user_controller.register(data)
 
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
     auth = request.get_json()
+
     return user_controller.login(auth)
 
 
@@ -22,4 +24,5 @@ def login():
 @jwt_required
 def get_all_users():
     user_id = get_jwt_identity()
+
     return user_controller.get_all(user_id)

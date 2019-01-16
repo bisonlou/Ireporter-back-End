@@ -11,8 +11,17 @@ validator = UserValidator()
 
 
 class UserController():
+    '''
+
+    Class to handle user related routes
+
+    '''
 
     def register(self, data):
+        '''
+        Function to register a user
+
+        '''
         hashed_password = generate_password_hash(
                             data['password'], method='sha256')
         user_id = str(uuid.uuid4())
@@ -24,24 +33,27 @@ class UserController():
         if len(errors) > 0:
             return jsonify({'status': 400, 'data': errors}), 400
 
-        try:
-            data['id'] = user_id
-            data['password'] = hashed_password
+        data['id'] = user_id
+        data['password'] = hashed_password
 
-            if user_services.count() == 0:
-                data['is_admin'] = True
-            else:
-                data['is_admin'] = False
+        if user_services.count() == 0:
+            data['is_admin'] = True
+        else:
+            data['is_admin'] = False
 
-            new_user = User(**data)
-            user_services.add_user(new_user)
-            success_response = {'id': user_id, 'message': 'User created'}
+        new_user = User(**data)
+        user_services.add_user(new_user)
+        success_response = {'id': user_id, 'message': 'User created'}
 
-            return jsonify({'status': 201, 'data': success_response}), 201
-        except:
-            abort(400)
+        return jsonify({'status': 201, 'data': success_response}), 201        
 
     def login(self, data):
+        '''
+        Function to login a user
+        The user must be registered
+        The function returns a jason web token
+
+        '''
         if not validator.has_login_required_fields(data):
             abort(400)
 
@@ -55,10 +67,12 @@ class UserController():
         abort(401)
 
     def get_all(self, user_id):
-        user = user_services.get_user_by_id(user_id)
-        if not user:
-            abort(404)
+        '''
+        Function to return all users given a user id
+        The user should be an administrator in order to get all the uses
 
+        '''
+        user = user_services.get_user_by_id(user_id)
         if not validator.user_is_admin(user):
             abort(403)
 
