@@ -71,8 +71,8 @@ class TestRedFlagView(unittest.TestCase):
             data=json.dumps(user2_login)
         )
 
-        self.token = json.loads(response_1.data)
-        self.token_2 = json.loads(response_2.data)
+        self.admin_token = json.loads(response_1.data)
+        self.non_admin_token = json.loads(response_2.data)
 
         red_flag_1 = {
             'created_on': '2018-12-24',
@@ -98,7 +98,7 @@ class TestRedFlagView(unittest.TestCase):
         self.test_client.post(
             '/api/v1/redflags',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_1)
         )
@@ -106,7 +106,7 @@ class TestRedFlagView(unittest.TestCase):
         self.test_client.post(
             '/api/v1/redflags',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_2)
         )
@@ -120,7 +120,8 @@ class TestRedFlagView(unittest.TestCase):
 
     def test_add_proper_red_flag(self):
         """
-        Test adding a red flag with expected details
+        Test adding a red flag with expected keys
+        Expect 201
         """
         red_flag = {
             'created_on': '2018-12-24',
@@ -135,7 +136,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.post(
             '/api/v1/redflags',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -151,6 +152,7 @@ class TestRedFlagView(unittest.TestCase):
         """
         Test adding a red flag with images
         and videos keys not of type list but string
+        Expect 400
         """
         red_flag = {
             'created_on': '2018-12-12',
@@ -165,7 +167,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.post(
             '/api/v1/redflags',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
             )
@@ -183,7 +185,7 @@ class TestRedFlagView(unittest.TestCase):
         """
         response = self.test_client.get(
             '/api/v1/redflags',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' + self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -198,7 +200,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.get(
             '/api/v1/redflags',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']})
+                     self.non_admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -208,10 +210,12 @@ class TestRedFlagView(unittest.TestCase):
     def test_get_existing_red_flag(self):
         """
         Test getting one red flag that exists
+        Expect 200
         """
         response = self.test_client.get(
             '/api/v1/redflags/1',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' +
+                     self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -220,11 +224,12 @@ class TestRedFlagView(unittest.TestCase):
     def test_get_red_flag_when_not_owner(self):
         """
         Test getting one red flag that does not belong to the user
+        Expect 403
         """
         response = self.test_client.get(
             '/api/v1/redflags/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']})
+                     self.non_admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 403)
@@ -232,10 +237,12 @@ class TestRedFlagView(unittest.TestCase):
     def test_get_non_existent_red_flag(self):
         """
         Test getting one red flag that does not exist
+        Expect 404
         """
         response = self.test_client.get(
             '/api/v1/redflags/3',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' +
+                     self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 404)
@@ -243,6 +250,7 @@ class TestRedFlagView(unittest.TestCase):
     def test_put_red_flag(self):
         """
         Test updating a red flag
+        Expect 200
         """
         red_flag = {
             "title": "Bribery",
@@ -258,7 +266,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/redflags/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
             )
@@ -269,6 +277,7 @@ class TestRedFlagView(unittest.TestCase):
     def test_put_red_flag_without_title(self):
         """
         Test updating a red flag without specifying a title
+        Expect 400
         """
         red_flag = {
             'comment': 'Police officer at CPS Badge #123',
@@ -283,7 +292,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/redflags/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -296,6 +305,7 @@ class TestRedFlagView(unittest.TestCase):
     def test_put_nonexistent_red_flag(self):
         """
         Test updating a red flag which does not exist
+        Expect 404
         """
         red_flag = {
             'title': 'Bribery',
@@ -311,7 +321,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/redflags/10',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -323,7 +333,8 @@ class TestRedFlagView(unittest.TestCase):
 
     def test_patch_escalated_red_flag(self):
         """
-        Test updating a red flag which has already been resolved
+        Test updating a red flag which has already been escalated
+        Expect 403
         """
         red_flag = {
             'title': 'Bribery',
@@ -338,7 +349,7 @@ class TestRedFlagView(unittest.TestCase):
         self.test_client.patch(
             '/api/v1/redflags/2/escalate',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json'
         )
 
@@ -346,7 +357,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/2/location',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -357,6 +368,7 @@ class TestRedFlagView(unittest.TestCase):
     def test_put_red_flag_when_not_owner(self):
         """
         Test updating a red flag which does not belong to the user
+        Expect 403
         """
         red_flag = {
             'title': 'Bribery',
@@ -372,7 +384,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/redflags/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -383,6 +395,7 @@ class TestRedFlagView(unittest.TestCase):
     def test_put_red_flag_without_optional_keys(self):
         """
         Test updating a red flag without optional keys
+        Expect 200
         """
         red_flag = {
             'title': 'Bribery',
@@ -395,7 +408,8 @@ class TestRedFlagView(unittest.TestCase):
 
         response = self.test_client.put(
             '/api/v1/redflags/1',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']},
+            headers={'Authorization': 'Bearer ' +
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
@@ -420,7 +434,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/1/location',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag))
         message = json.loads(response.data)
@@ -451,7 +465,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/1/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_update))
 
@@ -482,7 +496,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/1/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_update))
 
@@ -508,7 +522,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/10/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_update))
 
@@ -534,7 +548,7 @@ class TestRedFlagView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/redflags/1/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag_update))
 
@@ -550,7 +564,7 @@ class TestRedFlagView(unittest.TestCase):
                     '/api/v1/redflags/1',
                     content_type='application/json',
                     headers={'Authorization': 'Bearer ' +
-                             self.token['access_token']})
+                             self.admin_token['access_token']})
 
         message = json.loads(response.data)
 
@@ -559,18 +573,18 @@ class TestRedFlagView(unittest.TestCase):
         self.assertEqual(
             (message['data']['message']),
             'red-flag record has been deleted')
-        self.assertEqual(response.status_code, 200)
 
     def test_delete_non_existent_red_flag(self):
         """
-        Test deleting a red flag
+        Test deleting a red flag that does not exist
+        Expect 404
         """
 
         response = self.test_client.delete(
             '/api/v1/redflags/10',
             content_type='application/json',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']})
+                     self.admin_token['access_token']})
 
         message = json.loads(response.data)
 
@@ -587,3 +601,32 @@ class TestRedFlagView(unittest.TestCase):
 
         self.assertEqual(message['greeting'], 'Welcome to iReporter')
         self.assertEqual(response.status_code, 200)
+
+    def test_escalate_non_existent_flag(self):
+        '''
+        Test escalating a red flag that does not exixt
+        Expect 404
+        '''
+
+        response = self.test_client.patch(
+                    'api/v1/redflags/10/escalate',
+                    headers={'authorization': 'Bearer ' +
+                             self.admin_token['access_token']})
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 404)
+
+    def test_escalate_when_user_not_admin(self):
+        '''
+        Test escalating a red flag when not admin
+        Expect 403
+        '''
+
+        response = self.test_client.patch(
+                    'api/v1/redflags/10/escalate',
+                    headers={'authorization': 'Bearer ' +
+                             self.non_admin_token['access_token']})
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
+
