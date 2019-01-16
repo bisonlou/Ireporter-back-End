@@ -74,12 +74,19 @@ class UserServices():
         user_table.append(user)
 
     def get_user_by_id(self, user_id):
-        users = [user for user in user_table if user.id == user_id]
-        if len(users) > 0:
-            return users[0]
+        return self.get_user('id', user_id)
 
     def get_user_by_email(self, login_email):
-        users = [user for user in user_table if user.email == login_email]
+        return self.get_user('email', login_email)
+
+    def get_user(self, key, value):
+        users = []
+        if key == 'id':
+            users = [user for user in user_table if user.id == value]
+        elif key == 'email':
+            users = [user for user in user_table if user.email == value]
+
+        # only return if ther is a user found
         if len(users) > 0:
             return users[0]
 
