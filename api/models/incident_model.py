@@ -16,14 +16,12 @@ class Incident():
         self._location = kwags['location']
         self._status = kwags['status']
         self._incident_type = kwags['type']
+        self._videos = list()
+        self._images = list()
         if 'images' in kwags:
-            self._images = kwags['images']
-        else:
-            self._images = list()
+            self._images = kwags['images']            
         if 'videos' in kwags:
             self._videos = kwags['videos']
-        else:
-            self._videos = list()
 
     @property
     def id(self):
@@ -124,19 +122,18 @@ class IncidentServices():
             return self.count('intervention') + 1
 
     def get_all(self, user_id, is_admin, incident_type):
-        # check if user is admin and incident type
-        if incident_type == 'red-flag' and is_admin is True:
-            return [incident.to_dict() for incident in redflag_table]
-        elif incident_type == 'red-flag' and is_admin is False:
-            return [incident.to_dict() for incident in redflag_table
-                    if incident.created_by == user_id]
+        # check  incident type
+        table = []
+        if incident_type == 'red-flag':
+            table = redflag_table
+        if incident_type == 'intervention':
+            table = intervention_table
 
-        # check if user is admin and incident type
-        if incident_type == 'intervention' and is_admin is True:
-            return [incident.to_dict() for
-                    incident in intervention_table]
-        if incident_type == 'intervention' and is_admin is False:
-            return [incident.to_dict() for incident in intervention_table
+        # check if user is admin
+        if is_admin is True:
+            return [incident.to_dict() for incident in table]
+        else:
+            return [incident.to_dict() for incident in table
                     if incident.created_by == user_id]
 
     def remove_all(self, incident_type):
