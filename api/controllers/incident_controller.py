@@ -159,7 +159,8 @@ class IncidentController():
                                          update_incident, update_key)
         success_response = {
             'id': incident_id,
-            'message': f'Updated {incident_type} record’s {update_key}'
+            'message':
+            'Updated {} record’s {}'.format(incident_type, update_key)
         }
 
         return jsonify({'status': 200, 'data': success_response}), 200
@@ -196,7 +197,7 @@ class IncidentController():
         incident_services.delete_incident(existing_incident, incident_type)
         success_response = {
             'id': incident_id,
-            'message': f'{incident_type} record has been deleted'}
+            'message': '{} record has been deleted'.format(incident_type)}
 
         return jsonify({'status': 200, 'data': success_response}), 200
 
@@ -227,7 +228,7 @@ class IncidentController():
         incident_services.escalate_incident(existing_incident)
         success_response = {
             'id': incident_id,
-            'message': f'{incident_type} record has been escalated'}
+            'message': '{} record has been escalated'.format(incident_type)}
 
         return jsonify({'status': 200, 'data': success_response}), 200
 
