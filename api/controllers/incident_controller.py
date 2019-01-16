@@ -186,9 +186,10 @@ class IncidentController():
         if not incident_validator.is_owner(existing_incident, user_id):
             abort(403)
 
-        if not user.is_admin:
-            if not incident_validator.is_modifiable(existing_incident):
-                abort(403)
+        # check is user is an admin and whether the incident is modifiable
+        if not user.is_admin or not incident_validator.is_modifiable(
+                                existing_incident):
+            abort(403)
 
         incident_services.delete_incident(existing_incident, incident_type)
 
@@ -229,7 +230,6 @@ class IncidentController():
         }
 
         return jsonify({'status': 200, 'data': success_response}), 200
-
 
     @app.errorhandler(400)
     def bad_request(error):
