@@ -19,9 +19,9 @@ class User():
     def id(self):
         return self._id
 
-    @property
-    def user_name(self):
-        return self._user_name
+    # @property
+    # def user_name(self):
+    #     return self._user_name
 
     @property
     def email(self):
@@ -31,25 +31,25 @@ class User():
     def password(self):
         return self._password
 
-    @property
-    def phone_number(self):
-        return self._phone_number
+    # @property
+    # def phone_number(self):
+    #     return self._phone_number
 
-    @property
-    def date_registered(self):
-        return self._date_registered
+    # @property
+    # def date_registered(self):
+    #     return self._date_registered
 
-    @property
-    def first_name(self):
-        return self._first_name
+    # @property
+    # def first_name(self):
+    #     return self._first_name
 
-    @property
-    def last_name(self):
-        return self._last_name
+    # @property
+    # def last_name(self):
+    #     return self._last_name
 
-    @property
-    def other_names(self):
-        return self._other_names
+    # @property
+    # def other_names(self):
+    #     return self._other_names
 
     @property
     def is_admin(self):
@@ -86,15 +86,15 @@ class UserServices():
     def get_all(self):
         return [user.to_dict() for user in user_table]
 
-    def delete_user(self, user_id):
-        users = self.get_user(user_id)
-        if len(users) > 0:
-            user_table.remove(users[0])
+    # def delete_user(self, user_id):
+    #     users = self.get_user(user_id)
+    #     if len(users) > 0:
+    #         user_table.remove(users[0])
 
-    def promote_user(self, user_id):
-        users = self.get_user_by_id(user_id)
-        if len(users) > 0:
-            users[0].is_admin = True
+    # def promote_user(self, user_id):
+    #     users = self.get_user_by_id(user_id)
+    #     if len(users) > 0:
+    #         users[0].is_admin = True
 
     def count(self):
         return len(user_table)

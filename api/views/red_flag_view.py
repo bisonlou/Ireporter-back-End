@@ -61,15 +61,28 @@ def alter_red_flag(incident_id):
     return red_flag_controller.put_incident(**kwags)
 
 
-@app.route('/api/v1/redflags/<int:incident_id>/<string:query>',
+@app.route('/api/v1/redflags/<int:incident_id>/location',
            methods=['PATCH'])
 @jwt_required
-def update_red_flag_location(incident_id, query):
+def update_red_flag_location(incident_id):
     data = request.get_json()
     user_id = get_jwt_identity()
     kwags = dict(data=data, user_id=user_id,
                  incident_type=incident_type, incident_id=incident_id,
-                 query=query)
+                 query='location')
+
+    return red_flag_controller.patch_incident(**kwags)
+
+
+@app.route('/api/v1/redflags/<int:incident_id>/comment',
+           methods=['PATCH'])
+@jwt_required
+def update_red_flag_comment(incident_id):
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    kwags = dict(data=data, user_id=user_id,
+                 incident_type=incident_type, incident_id=incident_id,
+                 query='comment')
 
     return red_flag_controller.patch_incident(**kwags)
 
@@ -82,3 +95,13 @@ def delete_red_flag(incident_id):
                  incident_id=incident_id)
 
     return red_flag_controller.delete_incident(**kwags)
+
+
+@app.route('/api/v1/redflags/<int:incident_id>/escalate', methods=['PATCH'])
+@jwt_required
+def escalate_red_flag(incident_id):
+    user_id = get_jwt_identity()
+    kwags = dict(user_id=user_id, incident_type=incident_type,
+                 incident_id=incident_id)
+
+    return red_flag_controller.escalate_incident(**kwags)

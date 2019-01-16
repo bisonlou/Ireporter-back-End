@@ -49,15 +49,27 @@ def alter_intervention(incident_id):
     return intervention_controller.put_incident(**kwags)
 
 
-@app.route('/api/v1/interventions/<int:incident_id>/<string:query>',
+@app.route('/api/v1/interventions/<int:incident_id>/location',
            methods=['PATCH'])
 @jwt_required
-def update_intervention_location(incident_id, query):
+def update_intervention_location(incident_id):
     data = request.get_json()
     user_id = get_jwt_identity()
     kwags = dict(data=data, user_id=user_id,
                  incident_type=incident_type, incident_id=incident_id,
-                 query=query)
+                 query='location')
+
+    return intervention_controller.patch_incident(**kwags)
+
+@app.route('/api/v1/interventions/<int:incident_id>/comment',
+           methods=['PATCH'])
+@jwt_required
+def update_intervention_comment(incident_id):
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    kwags = dict(data=data, user_id=user_id,
+                 incident_type=incident_type, incident_id=incident_id,
+                 query='comment')
 
     return intervention_controller.patch_incident(**kwags)
 
@@ -70,3 +82,13 @@ def delete_intervention(incident_id):
                  incident_id=incident_id)
 
     return intervention_controller.delete_incident(**kwags)
+
+
+@app.route('/api/v1/interventions/<int:incident_id>/escalate', methods=['PATCH'])
+@jwt_required
+def escalate_intervention(incident_id):
+    user_id = get_jwt_identity()
+    kwags = dict(user_id=user_id, incident_type=incident_type,
+                 incident_id=incident_id)
+
+    return intervention_controller.escalate_incident(**kwags)

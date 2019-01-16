@@ -33,22 +33,19 @@ class UserController():
         if len(errors) > 0:
             return jsonify({'status': 400, 'data': errors}), 400
 
-        try:
-            data['id'] = user_id
-            data['password'] = hashed_password
+        data['id'] = user_id
+        data['password'] = hashed_password
 
-            if user_services.count() == 0:
-                data['is_admin'] = True
-            else:
-                data['is_admin'] = False
+        if user_services.count() == 0:
+            data['is_admin'] = True
+        else:
+            data['is_admin'] = False
 
-            new_user = User(**data)
-            user_services.add_user(new_user)
-            success_response = {'id': user_id, 'message': 'User created'}
+        new_user = User(**data)
+        user_services.add_user(new_user)
+        success_response = {'id': user_id, 'message': 'User created'}
 
-            return jsonify({'status': 201, 'data': success_response}), 201
-        except:
-            abort(400)
+        return jsonify({'status': 201, 'data': success_response}), 201        
 
     def login(self, data):
         '''
@@ -76,9 +73,6 @@ class UserController():
 
         '''
         user = user_services.get_user_by_id(user_id)
-        if not user:
-            abort(404)
-
         if not validator.user_is_admin(user):
             abort(403)
 

@@ -51,17 +51,13 @@ class UserValidator():
     def has_login_required_fields(self, data):
         '''
         Function to check if the login data is present
-        Returns True on succes otherwise False
+        Returns True on success otherwise False
 
         '''
         required_keys = ['email', 'password']
 
         for key in required_keys:
             if key not in data or not data[key]:
-                return False
-
-        for key in required_keys:
-            if not data[key]:
                 return False
 
         return True
