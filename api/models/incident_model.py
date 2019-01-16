@@ -29,18 +29,6 @@ class Incident():
     def id(self):
         return self._id
 
-    # @property
-    # def title(self):
-    #     return self._title
-
-    # @property
-    # def comment(self):
-    #     return self._comment
-
-    # @property
-    # def incident_type(self):
-    #     return self._incident_type
-
     @property
     def created_on(self):
         return self._created_on
@@ -49,18 +37,6 @@ class Incident():
     def created_by(self):
         return self._created_by
 
-    # @property
-    # def location(self):
-    #     return self._location
-
-    # @property
-    # def videos(self):
-    #     return self._videos
-
-    # @property
-    # def images(self):
-    #     return self._images
-
     @property
     def title(self):
         return self._title
@@ -68,10 +44,6 @@ class Incident():
     @property
     def comment(self):
         return self._comment
-
-    # @property
-    # def incident_type(self):
-    #     return self._incident_type
 
     @property
     def location(self):
@@ -152,13 +124,14 @@ class IncidentServices():
             return self.count('intervention') + 1
 
     def get_all(self, user_id, is_admin, incident_type):
-        # check if user is admin
+        # check if user is admin and incident type
         if incident_type == 'red-flag' and is_admin is True:
             return [incident.to_dict() for incident in redflag_table]
         elif incident_type == 'red-flag' and is_admin is False:
             return [incident.to_dict() for incident in redflag_table
                     if incident.created_by == user_id]
 
+        # check if user is admin and incident type
         if incident_type == 'intervention' and is_admin is True:
             return [incident.to_dict() for
                     incident in intervention_table]
@@ -207,7 +180,7 @@ class IncidentServices():
         # increment status by 1 if status is less than 3
         if status < 3:
             status += 1
-        
+
         # set new status
         incident.status = status
 
