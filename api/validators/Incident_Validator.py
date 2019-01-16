@@ -10,7 +10,7 @@ class ValidateIncident():
 
         '''
         required_keys = ['created_on', 'title', 'comment',
-                         'location', 'status', 'type']
+                         'location', 'type']
 
         list_values = ['images', 'videos']
         string_values = ['title', 'comment', 'created_on', 'type']
@@ -37,7 +37,7 @@ class ValidateIncident():
         Returns False if an incident is not modifiable
 
         '''
-        if not incident.status.upper() == 'PENDING':
+        if not incident.status == 0:
             return False
         return True
 

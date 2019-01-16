@@ -28,7 +28,7 @@ class IncidentController():
         incident_type = kwags['incident_type']
 
         data['created_by'] = user_id
-        data['status'] = 'Pending'
+        data['status'] = 0
 
         if not incident_validator.has_required_keys(data):
             abort(400)
@@ -67,14 +67,14 @@ class IncidentController():
 
     def get_all_incidents(self, **kwags):
         '''
-
-        Function to retun all incident give an incident id
+        Function to retun all incident given an incident id
 
         '''
         user_id = kwags['user_id']
         incident_type = kwags['incident_type']
 
         user = user_services.get_user_by_id(user_id)
+
         incidents = incident_services.get_all(user_id, user.is_admin,
                                               incident_type)
 
@@ -107,7 +107,7 @@ class IncidentController():
             abort(404)
 
         if not incident_validator.is_owner(existing_incident, user_id):
-            abort(401)
+            abort(403)
 
         if not incident_validator.is_modifiable(existing_incident):
             abort(403)
@@ -147,10 +147,12 @@ class IncidentController():
             abort(404)
 
         if not incident_validator.is_owner(existing_incident, user_id):
-            abort(401)
+            abort(403)
+
         if not incident_validator.is_modifiable(existing_incident):
             abort(403)
 
+        data['status'] = existing_incident.status
         update_incident = Incident(**data)
 
         incident_services.patch_incident(existing_incident,
@@ -165,7 +167,8 @@ class IncidentController():
     def delete_incident(self, **kwags):
         '''
         Function to delete an incident
-        Validates the incident exists and belongs to this user or the user is an adimin
+        Validates the incident exists and belongs to this user
+        or the user is an admin
         If validation is passed the incident is deleted
         and a success message is returned
 
@@ -196,6 +199,38 @@ class IncidentController():
             'message': f'{incident_type} record has been deleted'}
 
         return jsonify({'status': 200, 'data': success_response}), 200
+
+    def escalate_incident(self, **kwags):
+        '''
+        Function to change the status of an incident
+        Validates the incident exists and the user is an admin
+        If validation is passed the incident is escalated
+        and a success message is returned
+
+        '''
+        user_id = kwags['user_id']
+        incident_type = kwags['incident_type']
+        incident_id = kwags['incident_id']
+
+        user = user_services.get_user_by_id(user_id)
+        if not user:
+            abort(401)
+
+        if not user.is_admin:
+            abort(403)
+
+        existing_incident = incident_services.get_incident(
+                            incident_id, incident_type)
+        if not existing_incident:
+            abort(404)
+
+        incident_services.escalate_incident(existing_incident)
+        success_response = {
+            'id': incident_id,
+            'message': f'{incident_type} record has been escalated'}
+
+        return jsonify({'status': 200, 'data': success_response}), 200
+
 
     @app.errorhandler(400)
     def bad_request(error):

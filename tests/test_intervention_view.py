@@ -166,9 +166,9 @@ class TestInterventionView(unittest.TestCase):
         self.assertEqual(self.incident_services.count('intervention'), 2)
         self.assertEqual(response.status_code, 400)
 
-    def test_get_all_interventions(self):
+    def test_get_all_interventions_as_admin(self):
         """
-        Test getting all interventions
+        Test getting all interventions when user is admin
         """
         response = self.test_client.get(
             '/api/v1/interventions',
@@ -176,8 +176,21 @@ class TestInterventionView(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertEqual(self.incident_services.count('intervention'), 2)
         self.assertEqual(len(message['data']), 2)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_interventions_as_non_admin(self):
+        """
+        Test getting all interventions when user is not admin
+        """
+        response = self.test_client.get(
+            '/api/v1/interventions',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']})
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(len(message['data']), 1)
         self.assertEqual(response.status_code, 200)
 
     def test_get_existing_intervention(self):
@@ -291,46 +304,10 @@ class TestInterventionView(unittest.TestCase):
         self.assertEqual(message['error'], 'Not Found')
         self.assertEqual(response.status_code, 404)
 
-    def test_put_escalated_intervention(self):
-        """
-        Test updating a intervention which has already been resolved
-        """
-        intervention = {
-            'title': 'Bribery',
-            'comment': 'Police officer at CPS Badge #123',
-            'created_on': '2018-01-01',
-            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
-            'location': '(0.00000, 0.0000)',
-            'type': 'intervention',
-            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Under investigation'
-        }
-        # change the status of intervention 1
-        self.test_client.patch(
-            '/api/v1/interventions/1/status',
-            headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
-            content_type='application/json',
-            data=json.dumps(intervention)
-        )
-
-        # try updating a intervention whose status is now 'under investigation'
-        response = self.test_client.put(
-            '/api/v1/interventions/1',
-            headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
-            content_type='application/json',
-            data=json.dumps(intervention)
-        )
-        message = json.loads(response.data)
-
-        self.assertEqual(message['status'], 403)
-        self.assertEqual(message['error'], 'Forbidden')
-        self.assertEqual(response.status_code, 403)
-
     def test_put_intervention_when_not_owner(self):
         """
         Test updating a intervention which does not belong to the user
+        Expect 403 - Forbiden
         """
         intervention = {
             'title': 'Bribery',
@@ -352,9 +329,7 @@ class TestInterventionView(unittest.TestCase):
         )
         message = json.loads(response.data)
 
-        self.assertEqual(message['status'], 401)
-        self.assertEqual(message['error'], 'Unauthorised')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(message['status'], 403)
 
     def test_put_intervention_without_optional_keys(self):
         """
@@ -423,9 +398,9 @@ class TestInterventionView(unittest.TestCase):
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00500, 0.0000)',
             'type': 'intervention',
-            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Under investigation'
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}]
         }
+
         response = self.test_client.patch(
             '/api/v1/interventions/1/comment',
             headers={'Authorization': 'Bearer ' +
@@ -443,6 +418,37 @@ class TestInterventionView(unittest.TestCase):
                          get_incident(1, 'intervention').comment,
                          'Took a bribe')
         self.assertEqual(response.status_code, 200)
+
+    def test_update_escalated_interventions(self):
+        """
+        Test updating a redflag's comment
+        """
+        intervention = {
+            'title': 'Bribery at kabalagala juction',
+            'comment': 'Took a bribe',
+            'created_on': '2018-11-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00500, 0.0000)',
+            'type': 'intervention',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}]
+        }
+
+        self.test_client.patch(
+            '/api/v1/interventions/2/escalate',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
+            content_type='application/json')
+
+        response = self.test_client.patch(
+            '/api/v1/interventions/2/comment',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
+            content_type='application/json',
+            data=json.dumps(intervention))
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
 
     def test_delete_intervention(self):
         """
@@ -464,9 +470,26 @@ class TestInterventionView(unittest.TestCase):
         self.assertEqual((message['data']['id']), 1)
         self.assertEqual(response.status_code, 200)
 
+    def test_delete_intervention_when_not_owner(self):
+        """
+        Test deleting an intervention that was not created by the user
+        Expect 403
+        """
+
+        response = self.test_client.delete(
+            '/api/v1/interventions/1',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']})
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
+
     def test_delete_non_existent_intervention(self):
         """
-        Test deleting a intervention
+        Test deleting an intervention that does not exist
+        Expect 404
         """
 
         response = self.test_client.delete(
@@ -478,6 +501,23 @@ class TestInterventionView(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 404)
-        self.assertEqual(self.incident_services.count('intervention'), 2)
-        self.assertEqual(message['error'], 'Not Found')
-        self.assertEqual(response.status_code, 404)
+
+    def test_delete_intervention_under_investigation(self):
+        """
+        Test deleting an intervention that has been escalated
+        """
+        self.test_client.patch(
+            '/api/v1/interventions/2/escalate',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']})
+
+        response = self.test_client.delete(
+            '/api/v1/interventions/2',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']})
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)

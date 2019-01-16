@@ -26,4 +26,3 @@ def get_all_users():
     user_id = get_jwt_identity()
 
     return user_controller.get_all(user_id)
-

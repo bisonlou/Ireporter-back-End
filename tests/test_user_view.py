@@ -192,7 +192,7 @@ class TestUserView(unittest.TestCase):
         Test login with empty password
         """
         user = {
-            'email': 'bisonlou@aol.com',
+            'email': 'bisonlou@gmail.com',
             'password': ''
         }
 
@@ -208,7 +208,7 @@ class TestUserView(unittest.TestCase):
         Test login with wrong password
         """
         user = {
-            'email': 'bisonlou@aol.com',
+            'email': 'bisonlou@gmail.com',
             'password': 'Password123'
         }
 
@@ -265,3 +265,47 @@ class TestUserView(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(message['data'][0]['id'], self.user_id)
+
+    def test_get_all_users_as_non_administrator(self):
+        """
+        Test getting all users when not an administrator
+        Non admins should not be able to see other users but themselves
+        """
+        user = {
+            'user_name': 'bison',
+            'email': 'bisonlou@aol.com',
+            'date_registered': '2019-01-01',
+            'first_name': 'bison',
+            'last_name': 'lou',
+            'phone_number': '0753669897',
+            'password': 'Pa$$word123',
+            'other_names': ''
+        }
+
+        response = self.test_client.post(
+            '/api/v1/register',
+            content_type='application/json',
+            data=json.dumps(user))
+
+        login_data = {
+            'email': 'bisonlou@aol.com',
+            'password': 'Pa$$word123'
+        }
+
+        login_response = self.test_client.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(login_data))
+
+        token = json.loads(login_response.data)
+
+        response = self.test_client.get(
+            '/api/v1/users',
+            headers={'Authorization': 'Bearer ' +
+                     token['access_token']},
+            content_type='application/json'
+            )
+
+        message = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 403)

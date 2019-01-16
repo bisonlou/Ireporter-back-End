@@ -175,9 +175,11 @@ class TestRedFlagView(unittest.TestCase):
         self.assertEqual(self.incident_services.count('red-flag'), 2)
         self.assertEqual(response.status_code, 400)
 
-    def test_get_all_red_flags(self):
+    def test_get_all_red_flags_as_admin(self):
         """
-        Test getting all red flags
+        Test getting all red flags as a normal user
+        token is by an administrative user
+        2 red flag expected
         """
         response = self.test_client.get(
             '/api/v1/redflags',
@@ -187,6 +189,20 @@ class TestRedFlagView(unittest.TestCase):
         self.assertEqual(message['status'], 200)
         self.assertEquals(self.incident_services.count('red-flag'), 2)
         self.assertEqual(len(message['data']), 2)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_redflags_as_non_admin(self):
+        """
+        Test getting all red flags when user is not admin
+        """
+        response = self.test_client.get(
+            '/api/v1/redflags',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']})
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 200)
+        self.assertEqual(len(message['data']), 1)
         self.assertEqual(response.status_code, 200)
 
     def test_get_existing_red_flag(self):
@@ -200,8 +216,18 @@ class TestRedFlagView(unittest.TestCase):
 
         self.assertEqual(message['status'], 200)
         self.assertEqual(message['data']['id'], 1)
-        self.assertEqual(message['data']['title'], 'Police Officer')
-        self.assertEqual(response.status_code, 200)
+
+    def test_get_red_flag_when_not_owner(self):
+        """
+        Test getting one red flag that does not belong to the user
+        """
+        response = self.test_client.get(
+            '/api/v1/redflags/1',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']})
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
 
     def test_get_non_existent_red_flag(self):
         """
@@ -213,8 +239,6 @@ class TestRedFlagView(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 404)
-        self.assertEqual(message['error'], 'Not Found')
-        self.assertEqual(response.status_code, 404)
 
     def test_put_red_flag(self):
         """
@@ -241,7 +265,6 @@ class TestRedFlagView(unittest.TestCase):
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
-        self.assertEqual(response.status_code, 200)
 
     def test_put_red_flag_without_title(self):
         """
@@ -298,7 +321,7 @@ class TestRedFlagView(unittest.TestCase):
         self.assertEqual(message['error'], 'Not Found')
         self.assertEqual(response.status_code, 404)
 
-    def test_put_escalated_red_flag(self):
+    def test_patch_escalated_red_flag(self):
         """
         Test updating a red flag which has already been resolved
         """
@@ -309,31 +332,27 @@ class TestRedFlagView(unittest.TestCase):
             'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
             'location': '(0.00000, 0.0000)',
             'type': 'red-flag',
-            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
-            'status': 'Under investigation'
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}]
         }
         # change the status of red flag 1
         self.test_client.patch(
-            '/api/v1/redflags/1/status',
+            '/api/v1/redflags/2/escalate',
             headers={'Authorization': 'Bearer ' +
                      self.token['access_token']},
-            content_type='application/json',
-            data=json.dumps(red_flag)
+            content_type='application/json'
         )
 
         # try updating a red flag whose status is now 'under investigation'
-        response = self.test_client.put(
-            '/api/v1/redflags/1',
+        response = self.test_client.patch(
+            '/api/v1/redflags/2/location',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.token_2['access_token']},
             content_type='application/json',
             data=json.dumps(red_flag)
         )
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 403)
-        self.assertEqual(message['error'], 'Forbidden')
-        self.assertEqual(response.status_code, 403)
 
     def test_put_red_flag_when_not_owner(self):
         """
@@ -359,9 +378,7 @@ class TestRedFlagView(unittest.TestCase):
         )
         message = json.loads(response.data)
 
-        self.assertEqual(message['status'], 401)
-        self.assertEqual(message['error'], 'Unauthorised')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(message['status'], 403)
 
     def test_put_red_flag_without_optional_keys(self):
         """
@@ -446,8 +463,84 @@ class TestRedFlagView(unittest.TestCase):
             'Updated red-flag record’s comment')
         self.assertEqual(self.incident_services.
                          get_incident(1, 'red-flag').comment,
-                         'Took a bribe')
+                         'Took a bribe')        
         self.assertEqual(response.status_code, 200)
+
+    def test_update_red_flags_comment_with_missing_comment(self):
+        """
+        Test updating a redflag's comment without a comment
+        """
+        red_flag_update = {
+            'title': 'Bribery',
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'type': 'red-flag',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'status': 'Under investigation'
+        }
+        response = self.test_client.patch(
+            '/api/v1/redflags/1/comment',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
+            content_type='application/json',
+            data=json.dumps(red_flag_update))
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 400)
+
+    def test_update_non_existent_flag(self):
+        """
+        Test updating a redflag's comment when the 
+        red flag doest exist
+        """
+        red_flag_update = {
+            'title': 'Bribery',
+            'comment': 'Took a bribe',
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'type': 'red-flag',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'status': 'Under investigation'
+        }
+        response = self.test_client.patch(
+            '/api/v1/redflags/10/comment',
+            headers={'Authorization': 'Bearer ' +
+                     self.token['access_token']},
+            content_type='application/json',
+            data=json.dumps(red_flag_update))
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 404)
+
+    def test_update_flag_when_not_owner(self):
+        """
+        Test updating a redflag's comment when the
+        red flag doest belong to the user
+        """
+        red_flag_update = {
+            'title': 'Bribery',
+            'comment': 'Took a bribe',
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'type': 'red-flag',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'status': 'Under investigation'
+        }
+        response = self.test_client.patch(
+            '/api/v1/redflags/1/comment',
+            headers={'Authorization': 'Bearer ' +
+                     self.token_2['access_token']},
+            content_type='application/json',
+            data=json.dumps(red_flag_update))
+
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
 
     def test_delete_red_flag(self):
         """
