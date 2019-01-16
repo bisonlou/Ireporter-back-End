@@ -131,7 +131,7 @@ class IncidentController():
 
         '''
         data = request.get_json()
-        user_id = get_jwt_identity()       
+        user_id = get_jwt_identity()
 
         data['created_by'] = user_id
         data['id'] = incident_id

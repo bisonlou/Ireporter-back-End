@@ -15,18 +15,22 @@ class ValidateIncident():
         list_values = ['images', 'videos']
         string_values = ['title', 'comment', 'created_on', 'type']
 
-        for key in required_keys:
-            if key not in data:
-                return False
+        # get list of missing keys
+        missing_keys = [key for key in required_keys if key not in data]
+        if len(missing_keys) > 0:
+            return False
 
-        for value in string_values:
-            if type(data[value]) is not str:
-                return False
+        # get list of non-string values
+        non_strings = [value for value in string_values
+                       if type(data[value]) is not str]
+        if len(non_strings) > 0:
+            return False
 
-        for value in list_values:
-            if value in data:
-                if type(data[value]) is not list:
-                    return False
+        # get list of non-list values
+        non_lists = [value for value in list_values
+                     if value in data and type(data[value]) is not list]
+        if len(non_lists) > 0:
+            return False
 
         return True
 
