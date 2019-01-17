@@ -213,9 +213,8 @@ table th {
 /* register */
 
 .register-box {
-    margin-top: 10px;
-    margin-left: 250px;
-    padding:30px 20px;    
+    margin: auto;
+    padding:10px 20px;    
     background:#000;    
     opacity: 0.7;
     width:40%;
@@ -224,37 +223,31 @@ table th {
 .register-box h1 {
     margin:0px;
     padding: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-align: center;
-    font-size: 30px;
+    font-size: 20px;
 }
 
 .register-box p {
     margin:0px;
     padding: 0px;   
-    font-size:14px;
+    font-size:13px;
     font-weight: 100;
 }
 
 .register-box input {
     width:100%; 
-    margin-bottom: 20px;
     outline:none;
     border:none;
-    border-bottom: 1px solid #000000;
     color:#fff;
     font-size: 14px;
-}
-
-.register-box input[type=email],
- .register-box input[type="password"] 
- {
     border-bottom: 1px solid #fff;
     background: transparent;
-    height: 40px;
-    
 }
 
+.register-box input[type=submit] {
+    height: 40px;
+}
 
 .register-box a, .login-box a {
     color: darkgray;
@@ -614,6 +607,19 @@ border-spacing: 0px;
     .container{
         width: 95%;
     }
+
+    .register-box {
+        margin: auto;
+        width:60%;
+    }
+
+    .welcome-box {
+        padding-left: 0px;  
+    }
+
+    .login-box {
+        width:40%;          
+    }
 }
 
 @media screen and (max-width: 470px){
@@ -700,5 +706,10 @@ border-spacing: 0px;
         width: 100%;
         padding: 0px;
         height: 30px;
+    }
+
+    .register-box {
+        margin: auto;
+        width:80%;
     }
 }
