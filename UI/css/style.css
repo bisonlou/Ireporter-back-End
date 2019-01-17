@@ -478,12 +478,12 @@ border-spacing: 0px;
         height: 30px;        
     }
 
-    .filter .user{
+    .filter .user input{
         width: 40%;
         float: left;
     }
 
-    .filter .distrct{
+    .filter .district input{
         width:40%;
         float: right;
     }
@@ -556,14 +556,14 @@ border-spacing: 0px;
         
     }
 
-    .redflag-table .wide {
+    .redflag-table-wide {
         float: none;
-        width: 80%;
+        width: 95%;
     }
 
-    .intervention-table .wide{
+    .intervention-table-wide{
         float: none;
-        width: 80%;
+        width: 95%;
     }
   
 }
@@ -619,6 +619,20 @@ border-spacing: 0px;
 
     .login-box {
         width:40%;          
+    }
+
+    .filter{
+        width: 80%;
+    }
+
+    .filter .user input{
+        width: 50%;
+        float: left;
+    }
+
+    .filter .district input{
+        width:50%;
+        float: right;
     }
 }
 
