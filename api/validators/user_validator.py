@@ -29,8 +29,6 @@ class UserValidator():
 
         return True
 
-    # TODO : validate email
-
     def validate_password(self, data):
         '''
         Function to check if the given password meets minimum requrements
@@ -41,13 +39,13 @@ class UserValidator():
         errors = {}
         if len(password) < 6 or len(password) > 12:
             errors['length'] = 'Password should be between 6 and 12 characters'
-        elif not re.search("[a-z]", password):
+        if not re.search("[a-z]", password):
             errors['lower-char'] = 'Password should contain atleast 1 lower case character'
-        elif not re.search("[0-9]", password):
+        if not re.search("[0-9]", password):
             errors['numerical-char'] = 'Password should contain atleast 1 number'
-        elif not re.search("[A-Z]", password):
+        if not re.search("[A-Z]", password):
             errors['upper-char'] = 'Password should contain atleast 1 upper case character'
-        elif not re.search("[$#@]", password):
+        if not re.search("[$#@]", password):
             errors['symbol-char'] = "Password should contain atleast 1 of '$','#','@'"
 
         return errors
@@ -69,7 +67,7 @@ class UserValidator():
     def user_is_admin(self, user):
         '''
         Function to check if the is an administrator
-        Return True if the user is an administrator
+        Return True if the user is an administrator 
         otherwise False
 
         '''
