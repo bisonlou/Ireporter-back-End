@@ -78,7 +78,7 @@ class IncidentController():
         if not incident_validator.is_owner(incident, user_id):
             abort(403)
 
-        return jsonify({'status': 200, 'data': incident.to_dict()}), 200   
+        return jsonify({'status': 200, 'data': incident.to_dict()}), 200
 
     def put_incident(self, incident_type, incident_id):
         '''
