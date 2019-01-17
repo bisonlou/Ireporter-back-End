@@ -29,6 +29,8 @@ class UserValidator():
 
         return True
 
+    # TODO : validate email
+
     def validate_password(self, data):
         '''
         Function to check if the given password meets minimum requrements
@@ -67,7 +69,7 @@ class UserValidator():
     def user_is_admin(self, user):
         '''
         Function to check if the is an administrator
-        Return True if the user is an administrator 
+        Return True if the user is an administrator
         otherwise False
 
         '''

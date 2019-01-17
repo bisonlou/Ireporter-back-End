@@ -5,7 +5,7 @@ class ValidateIncident():
 
     def has_required_keys(self, data):
         '''
-        Function to check if incident keys and key dat is present
+        Function to check if incident keys and key data is present
         Also checks if data is in required format
 
         '''
@@ -29,6 +29,9 @@ class ValidateIncident():
                      if value in data and type(data[value]) is not list]
         if len(non_lists) > 0:
             return False
+
+        # TODO: validate image and video dictionary
+        # TODO: validate location is tuple
 
         return True
 
