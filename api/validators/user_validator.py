@@ -41,13 +41,13 @@ class UserValidator():
         errors = {}
         if len(password) < 6 or len(password) > 12:
             errors['length'] = 'Password should be between 6 and 12 characters'
-        elif not re.search("[a-z]", password):
+        if not re.search("[a-z]", password):
             errors['lower-char'] = 'Password should contain atleast 1 lower case character'
-        elif not re.search("[0-9]", password):
+        if not re.search("[0-9]", password):
             errors['numerical-char'] = 'Password should contain atleast 1 number'
-        elif not re.search("[A-Z]", password):
+        if not re.search("[A-Z]", password):
             errors['upper-char'] = 'Password should contain atleast 1 upper case character'
-        elif not re.search("[$#@]", password):
+        if not re.search("[$#@]", password):
             errors['symbol-char'] = "Password should contain atleast 1 of '$','#','@'"
 
         return errors
