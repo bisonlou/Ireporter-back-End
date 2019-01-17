@@ -18,12 +18,17 @@ Framework: Flask
 
 How to use
 ------------
-```
+```bash
 git clone https://github.com/bisonlou/ireporter.git
+
 cd ireporter
+
 virtualenv venv
+
 source venv/Scripts/activate
+
 pip install -r requirements.txt
+
 python app.py
 
 ```
