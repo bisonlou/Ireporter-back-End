@@ -11,19 +11,24 @@ To access the api, browse to https://bisonlou.herokuapp.com/ using postman
 Technology
 -------------
 ```
-Language:  Python 3.7
+Language:  Python
 Framework: Flask
 
 ```
 
 How to use
 ------------
-```
+```bash
 git clone https://github.com/bisonlou/ireporter.git
+
 cd ireporter
+
 virtualenv venv
+
 source venv/Scripts/activate
+
 pip install -r requirements.txt
+
 python app.py
 
 ```
