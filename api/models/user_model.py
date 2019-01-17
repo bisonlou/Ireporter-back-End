@@ -26,7 +26,7 @@ class User():
     @property
     def password(self):
         return self._password
- 
+
     @property
     def is_admin(self):
         return self._is_admin

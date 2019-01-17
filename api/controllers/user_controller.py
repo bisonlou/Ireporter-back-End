@@ -12,7 +12,6 @@ validator = UserValidator()
 
 class UserController():
     '''
-
     Class to handle user related routes
 
     '''
@@ -46,7 +45,7 @@ class UserController():
         user_services.add_user(new_user)
         success_response = {'id': user_id, 'message': 'User created'}
 
-        return jsonify({'status': 201, 'data': success_response}), 201        
+        return jsonify({'status': 201, 'data': success_response}), 201
 
     def login(self):
         '''
