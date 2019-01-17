@@ -61,8 +61,8 @@ class TestInterventionView(unittest.TestCase):
             data=json.dumps(user_2)
         )
 
-        self.token = json.loads(response_1.data)
-        self.token_2 = json.loads(response_2.data)
+        self.admin_token = json.loads(response_1.data)
+        self.non_admin_token = json.loads(response_2.data)
 
         intervention_1 = {
             'created_on': '2018-12-24',
@@ -88,7 +88,7 @@ class TestInterventionView(unittest.TestCase):
         self.test_client.post(
             '/api/v1/interventions',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention_1)
         )
@@ -96,7 +96,7 @@ class TestInterventionView(unittest.TestCase):
         self.test_client.post(
             '/api/v1/interventions',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention_2)
         )
@@ -125,7 +125,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.post(
             '/api/v1/interventions',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
         )
@@ -155,7 +155,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.post(
             '/api/v1/interventions',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
             )
@@ -172,7 +172,7 @@ class TestInterventionView(unittest.TestCase):
         """
         response = self.test_client.get(
             '/api/v1/interventions',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' + self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -186,7 +186,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.get(
             '/api/v1/interventions',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']})
+                     self.non_admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -199,7 +199,7 @@ class TestInterventionView(unittest.TestCase):
         """
         response = self.test_client.get(
             '/api/v1/interventions/1',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' + self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 200)
@@ -213,7 +213,7 @@ class TestInterventionView(unittest.TestCase):
         """
         response = self.test_client.get(
             '/api/v1/interventions/3',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']})
+            headers={'Authorization': 'Bearer ' + self.admin_token['access_token']})
         message = json.loads(response.data)
 
         self.assertEqual(message['status'], 404)
@@ -238,7 +238,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/interventions/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
             )
@@ -266,7 +266,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/interventions/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
         )
@@ -294,7 +294,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/interventions/10',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
         )
@@ -323,7 +323,40 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.put(
             '/api/v1/interventions/1',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
+            content_type='application/json',
+            data=json.dumps(intervention)
+        )
+        message = json.loads(response.data)
+
+        self.assertEqual(message['status'], 403)
+
+    def test_put_escalated_intervention(self):
+        """
+        Test updating an intervention which has already been escalaed
+        Expect 403 - Forbiden
+        """
+        intervention = {
+            'title': 'Bribery',
+            'comment': 'Police officer at CPS Badge #123',
+            'created_on': '2018-01-01',
+            'images': [{'id': 1, 'name': 'photo_0979.jpg', 'size': 234}],
+            'location': '(0.00000, 0.0000)',
+            'type': 'intervention',
+            'videos': [{'id': 1, 'name': 'mov_0002.mp4', 'size': 2340}],
+            'status': 'Pending'
+        }
+
+        self.test_client.patch(
+            '/api/v1/interventions/2/escalate',
+            headers={'Authorization': 'Bearer ' +
+                     self.admin_token['access_token']}
+        )
+
+        response = self.test_client.put(
+            '/api/v1/interventions/2',
+            headers={'Authorization': 'Bearer ' +
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
         )
@@ -346,7 +379,7 @@ class TestInterventionView(unittest.TestCase):
 
         response = self.test_client.put(
             '/api/v1/interventions/1',
-            headers={'Authorization': 'Bearer ' + self.token['access_token']},
+            headers={'Authorization': 'Bearer ' + self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention)
         )
@@ -373,7 +406,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/interventions/1/location',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention))
         message = json.loads(response.data)
@@ -404,7 +437,7 @@ class TestInterventionView(unittest.TestCase):
         response = self.test_client.patch(
             '/api/v1/interventions/1/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention))
 
@@ -436,13 +469,13 @@ class TestInterventionView(unittest.TestCase):
         self.test_client.patch(
             '/api/v1/interventions/2/escalate',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']},
+                     self.admin_token['access_token']},
             content_type='application/json')
 
         response = self.test_client.patch(
             '/api/v1/interventions/2/comment',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']},
+                     self.non_admin_token['access_token']},
             content_type='application/json',
             data=json.dumps(intervention))
 
@@ -458,7 +491,7 @@ class TestInterventionView(unittest.TestCase):
                     '/api/v1/interventions/1',
                     content_type='application/json',
                     headers={'Authorization': 'Bearer ' +
-                             self.token['access_token']})
+                             self.admin_token['access_token']})
 
         message = json.loads(response.data)
 
@@ -480,7 +513,7 @@ class TestInterventionView(unittest.TestCase):
             '/api/v1/interventions/1',
             content_type='application/json',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']})
+                     self.non_admin_token['access_token']})
 
         message = json.loads(response.data)
 
@@ -496,7 +529,7 @@ class TestInterventionView(unittest.TestCase):
             '/api/v1/interventions/10',
             content_type='application/json',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']})
+                     self.admin_token['access_token']})
 
         message = json.loads(response.data)
 
@@ -510,13 +543,13 @@ class TestInterventionView(unittest.TestCase):
             '/api/v1/interventions/2/escalate',
             content_type='application/json',
             headers={'Authorization': 'Bearer ' +
-                     self.token['access_token']})
+                     self.admin_token['access_token']})
 
         response = self.test_client.delete(
             '/api/v1/interventions/2',
             content_type='application/json',
             headers={'Authorization': 'Bearer ' +
-                     self.token_2['access_token']})
+                     self.non_admin_token['access_token']})
 
         message = json.loads(response.data)
 
