@@ -16,12 +16,8 @@ class Incident():
         self._location = kwags['location']
         self._status = kwags['status']
         self._incident_type = kwags['type']
-        self._videos = list()
-        self._images = list()
-        if 'images' in kwags:
-            self._images = kwags['images']            
-        if 'videos' in kwags:
-            self._videos = kwags['videos']
+        self._images = kwags.get('images', list())
+        self._videos = kwags.get('videos', list())
 
     @property
     def id(self):

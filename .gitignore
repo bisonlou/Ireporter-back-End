@@ -1,7 +1,6 @@
 venv/*
 .vscode/*
-api/__pycache__/*
-api/views/__pycache__/*
-api/validators/__pycache__/*
-tests/__pycache__/*
+*.pyc
+.coverage
 htmlcov/*
+
