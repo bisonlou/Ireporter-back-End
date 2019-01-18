@@ -93,6 +93,7 @@ class IncidentController():
 
         data['created_by'] = user_id
         data['id'] = incident_id
+        data['status'] = 0
 
         if not incident_validator.has_required_keys(data):
             abort(400)
