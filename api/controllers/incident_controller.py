@@ -216,7 +216,7 @@ class IncidentController():
         if not user:
             abort(401)
 
-        if not user.is_admin:
+        if user.is_admin is False:
             abort(403)
 
         existing_incident = incident_services.get_incident(
