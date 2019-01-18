@@ -23,7 +23,7 @@ class UserValidator():
                          'email', 'phone_number', 'date_registered']
 
         # get list of keys with missing data
-        missing_data = [key for key in required_keys if not data[key]]
+        missing_data = [key for key in required_keys if len(data[key]) == 0]
         if len(missing_data):
             return False
 
@@ -61,7 +61,7 @@ class UserValidator():
         required_keys = ['email', 'password']
 
         for key in required_keys:
-            if key not in data or not data[key]:
+            if key not in data or  len(data[key]) == 0:
                 return False
 
         return True

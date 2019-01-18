@@ -18,6 +18,11 @@ class ValidateIncident():
         if len(missing_keys) > 0:
             return False
 
+        # get list of missing data
+        missing_keys = [key for key in required_keys if len(data[key])]
+        if len(missing_keys) > 0:
+            return False
+
         # get list of non-string values
         non_strings = [value for value in string_values
                        if type(data[value]) is not str]
