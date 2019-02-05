@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width">
     <!--  CSS -->
     <link href="./css/style.css" rel="stylesheet">
+    <script src="./js/scripts.js" type="text/javascript"></script>
 
 </head>
 
@@ -17,20 +18,21 @@
             <div class="welcome-box">
                 <h1>Welcome to <span class="highlight">i</span>Reporter</h1>
                 <p>Corruption is a huge bane to Africa’s development. Hence the birth of iReporter.</p>
-                <p>iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities and the general public</p>
-                
+                <p>iReporter enables any citizen to bring any form of corruption to the notice of appropriate
+                    authorities and the general public</p>
+
             </div>
-            <div class="login-box">
+            <div class="login-box">               
                 <h1>Login</h1>
-                <form action="./home.html">
-                    <p>Email</p>
-                    <input type="email" placeholder="Email" />
-                    <p>Password</p>
-                    <input type="password" placeholder="Password" />
-                    <input type="submit" value="Login">
-                    <a href="#">Forgot your password?</a><br>
-                    <a href="./register.html">Do not have an account?</a>
-                </form>
+                <div class="messages" id='messages'>
+                </div>
+                <p>Email</p>
+                <input type="email" placeholder="Email" id="email" />
+                <p>Password</p>
+                <input type="password" placeholder="Password" id="password" />
+                <input type="submit" value="Login" onclick="login()">
+                <a href="#">Forgot your password?</a><br>
+                <a href="./register.html">Do not have an account?</a>
             </div>
         </div>
     </div>

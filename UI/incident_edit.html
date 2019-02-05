@@ -5,7 +5,7 @@
     <meta name="description" content="Hold your leaders accountable.">
     <meta name="author" content="Innocent Lou">
 
-    <title>iReporter | Add Intervention.</title>
+    <title>iReporter | Edit Incident.</title>
     <meta name="viewport" content="width=device-width">
     <!--  CSS -->
     <link href="./css/style.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 
 </head>
 
-<body>
+<body onload="getIncident()">
     <div class="bg-image">
         <header id="main-header">
             <div class="container">
@@ -31,7 +31,7 @@
         </header>
     </div>
     <div class="container">
-        <form action="home.html" class="flag-box">
+        <div action="home.html" class="flag-box">
             <div class="left">
                 <p>Title</p>
                 <input type="text" placeholder="Title" id="title">
@@ -61,10 +61,10 @@
                     </table>
                 </div>
             </div>
+        </div>
     </div>
-    </form>
     <div class="flag-box-submit">
-        <input type="submit" onclick="postIncident('intervention')" value="Submit">
+        <input type="submit" onclick="putIncidents()" value="Submit Changes">
     </div>
     </div>
 

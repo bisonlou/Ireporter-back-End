@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <!--  CSS -->
     <link href="./css/style.css" rel="stylesheet">
+    <script src="./js/scripts.js" type="text/javascript"></script>
 
 </head>
 
@@ -22,7 +23,7 @@
             </div>
             <nav>
                 <ul>
-                    <li class="current"><a href="./home.html">Home</a></li>
+                    <li class="current"><a href="./index.html">Home</a></li>
                     <li id="account-circle"><a href="./login.html">Hello bisonlou</a></li>
                     <li id="account-circle"><a href="./admin.html">Admin</a></li>
                 </ul>
@@ -30,14 +31,12 @@
         </header>
     </div>
     <div class="container">
-        <form action="home.html" class="flag-box">
+        <div class="flag-box">
             <div class="left">
                 <p>Title</p>
-                <input type="text" placeholder="Name">
-                <p>Red flag date</p>
-                <input type="date">
+                <input type="text" placeholder="Title" id="title">
                 <p>Comment</p>
-                <textarea width="100px" height="50px">Describe incident...</textarea>
+                <textarea width="100px" height="300px" id="comment">Describe incident...</textarea>
                 <p>Location</p>
                 <div class="form-group">
                     <input type="text" disabled="disabled">
@@ -49,7 +48,7 @@
                 <input type="file">
                 <div class="media-table">
                     <table>
-                        
+
                     </table>
                 </div>
             </div>
@@ -58,18 +57,15 @@
                 <input type="file">
                 <div class="media-table">
                     <table>
-                       
+
                     </table>
                 </div>
             </div>
+        </div>
     </div>
-    </form>
     <div class="flag-box-submit">
-        <input type="submit" value="Submit">
+        <input type="submit" onclick="postIncident('red-flag')" value="Submit" >
     </div>
-
-    </div>
-
 </body>
 
 </html>
