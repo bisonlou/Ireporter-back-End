@@ -549,7 +549,6 @@ border-spacing: 0px;
 
     .flag-box .left, .flag-box .middle, .flag-box .right{
         float:none;
-        width: 90%;
         margin-bottom: 10px;
         margin-right: 0px;
         margin-left: 10px;

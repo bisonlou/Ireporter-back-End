@@ -4,6 +4,8 @@ function register(){
   url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
   // url = 'http://127.0.0.1:5000/api/v1/auth/signup';
 
+  check_passwords_match();
+
   headers = get_headers()
   body = JSON.stringify({
     'user_name': get_element_value('username'),
@@ -246,9 +248,19 @@ function get_element(element_id){
   return document.getElementById(element_id)
 }
 
+function check_passwords_match(){
+  if (get_element_value('password') != get_element_value('confirm_password')){
+    data = {'errors': ['Passwords do not match']}
+    display_errors(data)
+  }
+}
+
 function display_errors(data){
   message_div = document.getElementById('messages');
-  message_div.innerHTML = "";
+  while (message_div.firstChild) {
+    message_div.removeChild(message_div.firstChild);
+  }
+
   errors= data['errors'];
 
   for (i=0; i<errors.length; i++){
