@@ -252,6 +252,8 @@ function check_passwords_match(){
   if (get_element_value('password') != get_element_value('confirm_password')){
     data = {'errors': ['Passwords do not match']}
     display_errors(data)
+
+    return
   }
 }
 
