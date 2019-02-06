@@ -146,7 +146,7 @@ function postIncident(incidentType){
     return response.json();
   }).then(data => {
     if (data['status'] == 201){
-      navigate('index.html');
+      navigate_to('index.html');
     }
   }).catch(err => {
     console.log(err);
@@ -248,6 +248,7 @@ function get_element(element_id){
 
 function display_errors(data){
   message_div = document.getElementById('messages');
+  message_div.innerHTML = "";
   errors= data['errors'];
 
   for (i=0; i<errors.length; i++){
