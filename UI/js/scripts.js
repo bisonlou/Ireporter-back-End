@@ -1,13 +1,14 @@
+var image_collection
 
 
 function register(){
-  url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
-  // url = 'http://127.0.0.1:5000/api/v1/auth/signup';
+  //const url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
+  const url = 'http://127.0.0.1:5000/api/v1/auth/signup';
 
   check_passwords_match();
 
-  headers = get_headers()
-  body = JSON.stringify({
+  let headers = get_headers()
+  let body = JSON.stringify({
     'user_name': get_element_value('username'),
     'email': get_element_value('email'),
     'first_name': get_element_value('firstname'),
@@ -38,19 +39,17 @@ function register(){
 }
 
 function login(){
-  url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
-  // url = 'http://127.0.0.1:5000/api/v1/auth/login';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
+  const url = 'http://127.0.0.1:5000/api/v1/auth/login';
 
   body = JSON.stringify({
     'email': get_element_value('email'),
     'password': get_element_value('password')
   });
 
-  headers = get_headers();
-
   fetch(url,{
     method: 'post',
-    headers: headers,
+    headers:  get_headers(),
     body: body
     })
   .then(response => {
@@ -59,7 +58,7 @@ function login(){
   }).then(data => {
     if (data['status'] == 200){
       set_cookie(data);  
-      navigate_to("index.html")
+      navigate_to("index.html");
     }  
     else {
       display_errors(data);
@@ -71,10 +70,14 @@ function login(){
   });
 }
 
+function getIncidents(){
+  getRedflags();
+  getInterventions();
+}
 
 function getRedflags(){
-  url = 'https://knightedge.herokuapp.com/api/v1/redflags';
-  // url = 'http://127.0.0.1:5000/api/v1/redflags';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/redflags';
+  const url = 'http://127.0.0.1:5000/api/v1/redflags';
 
   fetch(url, {
     headers: get_headers()
@@ -85,12 +88,12 @@ function getRedflags(){
   }).then(data => {
 
     if (data['status'] == 401){
-      navigate_to('login.html')
+      navigate_to('login.html');
     }
     
-    table = get_element('redflag-table');
+    const table = get_element('redflag-table');
     populate_incident_table(data, table, 'red-flag')  
-    update_dashboard(data, 'red-flag')  
+    update_dashboard(data, 'red-flag');
   
   }).catch(err => {
     console.log(err);
@@ -98,8 +101,8 @@ function getRedflags(){
 }
 
 function getInterventions(){
-  url = 'https://knightedge.herokuapp.com/api/v1/interventions';
-  // url = 'http://127.0.0.1:5000/api/v1/interventions';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/interventions';
+  const url = 'http://127.0.0.1:5000/api/v1/interventions';
 
   fetch(url,{
     headers: get_headers()
@@ -113,7 +116,7 @@ function getInterventions(){
       navigate_to('login.html');
     }    
 
-    table = document.getElementById('intervention-table');
+    const table = document.getElementById('intervention-table');
     populate_incident_table(data, table, 'intervention');
     update_dashboard(data, 'intervention')
   
@@ -125,17 +128,14 @@ function getInterventions(){
 
 
 function postIncident(incidentType){
-  url = 'https://knightedge.herokuapp.com/api/v1/incidents';
-  // url = 'http://127.0.0.1:5000/api/v1/incidents';
+  // url = 'https://knightedge.herokuapp.com/api/v1/incidents';
+  url = 'http://127.0.0.1:5000/api/v1/incidents';
   
-  body = JSON.stringify({
+  let body = JSON.stringify({
     'title': get_element_value('title'),
     'comment': get_element_value('comment'),
     'location': '(00.000000, 00.000000)',
-    'type': incidentType,
-    'status': 'pending',
-    'images': ['image_001.jpg'],
-    'videos': ['video_001.mp4']
+    'type': incidentType
   })
 
   fetch(url, {
@@ -148,25 +148,71 @@ function postIncident(incidentType){
     return response.json();
   }).then(data => {
     if (data['status'] == 201){
-      navigate_to('index.html');
+      let incident_id = data['data'][0]['id'];
+      return upload_images(incident_id);
     }
-  }).catch(err => {
+  }).then(response => {
+    console.log(response);
+  })
+  .catch(err => {
     console.log(err);
-  });
+  });  
 }
 
+function upload_images(incident_id){  
+  for (i=0; i < image_collection.length; i++){
+    form_data = new FormData();
+    file = image_collection[i];
+
+    form_data.append("image",file, file.name);
+    url ='http://127.0.0.1:5000/api/v1/incidents/' + incident_id + '/addImage?';
+
+    fetch(url, {
+      method: 'patch',
+      body: form_data,
+      headers: {
+        'Authorization': document.cookie
+          }
+      });
+  } 
+}
+
+
+function displayImages(files){
+  let i = 0
+  image_collection = files;
+  numFiles = files.length;
+  var table = get_element('images_table')
+
+  for (i; i < numFiles; i++) {
+    const file = files[i];
+    
+    var row = table.insertRow(i);
+      
+    var name_cell = row.insertCell(0);
+    var delete_cell = row.insertCell(1);
+
+    file_name = file.name;
+
+    name_cell.innerHTML = file_name;
+    delete_cell.innerHTML =  '<a href="#">Delete</a>';
+  }
+}
+
+
+
 function putIncident(){
-  url = '';
+  var url = '';
   if (incidentType == 'red-flag'){
-    url = url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    // url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
+    url ='http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
   }
   if (incidentType == 'intervention'){
-    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
+    url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
   }
   
-  body = JSON.stringify({
+  let body = JSON.stringify({
     'title': get_element_value('title'),
     'comment': get_element_value('comment'),
     'location': '(00.000000, 00.000000)',
@@ -194,22 +240,22 @@ function putIncident(){
 }
 
 function getIncident(){
-  var url = window.location.href;
-  var incidentType = /type=([^&]+)/.exec(url)[1];
-  var incidentId = /id=([^&]+)/.exec(url)[1];
+  let current_url = window.location.href;
+  let incidentType = /type=([^&]+)/.exec(current_url)[1];
+  let incidentId = /id=([^&]+)/.exec(current_url)[1];
   incidentId = parseInt(incidentId, 10)
 
-  title = get_element('title');
-  comment = get_element('comment');
+  let title = get_element('title');
+  let comment = get_element('comment');
 
-  url = '';
+  var url = '';
   if (incidentType == 'red-flag'){
-    url = url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    // url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
+    url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
   }
   if (incidentType == 'intervention'){
-    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
+    url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
   }
 
   fetch(url,{
@@ -221,7 +267,7 @@ function getIncident(){
     return response.json();
   }).then(data => {
     if (data['status'] == 201){
-      navigate_to('index.html')
+      navigate_to('index.html');
     }
 
     title.value = data['data'][0]['title'];
@@ -250,8 +296,8 @@ function get_element(element_id){
 
 function check_passwords_match(){
   if (get_element_value('password') != get_element_value('confirm_password')){
-    data = {'errors': ['Passwords do not match']}
-    display_errors(data)
+    data = {'errors': ['Passwords do not match']};
+    display_errors(data);
 
     return
   }
@@ -266,9 +312,9 @@ function display_errors(data){
   errors= data['errors'];
 
   for (i=0; i<errors.length; i++){
-    var paragraph = document.createElement("P");
+    let paragraph = document.createElement("P");
     paragraph.style = "color:red";
-    var error = document.createTextNode(errors[i]);
+    let error = document.createTextNode(errors[i]);
 
     paragraph.appendChild(error); 
     message_div.appendChild(paragraph);
@@ -276,12 +322,13 @@ function display_errors(data){
 }
 
 function navigate_to(page){
-  window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
+  // window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
+  window.location.href = "http://localhost/iReporter/" + page ;
 }
 
 function set_cookie(data){
-  token = data['data'][0]['access_token'];
-  bearer_token = "Bearer " + token + ";";
+  let token = data['data'][0]['access_token'];
+  let bearer_token = "Bearer " + token + ";";
   document.cookie = "token=" + bearer_token;
 }
 
@@ -324,16 +371,16 @@ function populate_incident_table(data, table, type){
 function update_dashboard(data, type) {
   if (type == 'red-flag'){
 
-    get_element('total-redflags').innerHTML = data['totals']['total']['count']
-    get_element('pending-redflags').innerHTML = data['totals']['pending']['count']
-    get_element('rejected-redflags').innerHTML = data['totals']['rejected']['count']
+    get_element('total-redflags').innerHTML = data['totals']['total']['count'];
+    get_element('pending-redflags').innerHTML = data['totals']['pending']['count'];
+    get_element('rejected-redflags').innerHTML = data['totals']['rejected']['count'];
 
   }
   if (type == 'intervention'){
 
-    get_element('total-interventions').innerHTML = data['totals']['total']['count']
-    get_element('pending-interventions').innerHTML = data['totals']['pending']['count']
-    get_element('rejected-interventions').innerHTML = data['totals']['rejected']['count']
+    get_element('total-interventions').innerHTML = data['totals']['total']['count'];
+    get_element('pending-interventions').innerHTML = data['totals']['pending']['count'];
+    get_element('rejected-interventions').innerHTML = data['totals']['rejected']['count'];
 
   }
 }

@@ -43,10 +43,9 @@
             </div>
             <div class="middle">
                 <p>Image evidence</p>
-                <input type="file">
+                <input type="file" id="image" multiple onchange="displayImages(this.files); return false;" />
                 <div class="media-table">
-                    <table>
-
+                    <table id="images_table">
                     </table>
                 </div>
             </div>
@@ -62,7 +61,7 @@
         </div>
     </div>
     <div class="flag-box-submit">
-        <input type="submit" onclick="postIncident('red-flag')" value="Submit" >
+        <input type="submit" onclick="postIncident('red-flag');" value="Submit" >
     </div>
 </body>
 
