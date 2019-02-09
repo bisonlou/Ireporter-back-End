@@ -110,6 +110,28 @@ table th {
   }
 
   /* custom */
+  .alert-box {
+      background-color: teal;
+      display: none;
+      width: 80%;
+      height: 40px;
+      margin:auto;
+  }
+
+  .alert-box p, .error-box p{
+      color:#fff;
+      text-align: center;
+      padding-top: 8px;
+      line-height: 1.8em;
+  }
+
+  .error-box {
+    background-color: crimson;
+    display: none;    
+    width: 80%;
+    height: 40px;
+    margin:auto;
+  }
 
 .tables td a{
     color: lightseagreen;

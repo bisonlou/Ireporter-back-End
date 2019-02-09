@@ -2,8 +2,8 @@ var image_collection
 
 
 function register(){
-  //const url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
-  const url = 'http://127.0.0.1:5000/api/v1/auth/signup';
+  const url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
+  // const url = 'http://127.0.0.1:5000/api/v1/auth/signup';
 
   check_passwords_match();
 
@@ -39,8 +39,8 @@ function register(){
 }
 
 function login(){
-  // const url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
-  const url = 'http://127.0.0.1:5000/api/v1/auth/login';
+  const url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
+  // const url = 'http://127.0.0.1:5000/api/v1/auth/login';
 
   body = JSON.stringify({
     'email': get_element_value('email'),
@@ -76,8 +76,8 @@ function getIncidents(){
 }
 
 function getRedflags(){
-  // const url = 'https://knightedge.herokuapp.com/api/v1/redflags';
-  const url = 'http://127.0.0.1:5000/api/v1/redflags';
+  const url = 'https://knightedge.herokuapp.com/api/v1/redflags';
+  // const url = 'http://127.0.0.1:5000/api/v1/redflags';
 
   fetch(url, {
     headers: get_headers()
@@ -101,8 +101,8 @@ function getRedflags(){
 }
 
 function getInterventions(){
-  // const url = 'https://knightedge.herokuapp.com/api/v1/interventions';
-  const url = 'http://127.0.0.1:5000/api/v1/interventions';
+  const url = 'https://knightedge.herokuapp.com/api/v1/interventions';
+  // const url = 'http://127.0.0.1:5000/api/v1/interventions';
 
   fetch(url,{
     headers: get_headers()
@@ -128,8 +128,13 @@ function getInterventions(){
 
 
 function postIncident(incidentType){
-  // url = 'https://knightedge.herokuapp.com/api/v1/incidents';
-  url = 'http://127.0.0.1:5000/api/v1/incidents';
+
+  if (validateIncident() == false){
+    return
+  }
+
+  url = 'https://knightedge.herokuapp.com/api/v1/incidents';
+  // url = 'http://127.0.0.1:5000/api/v1/incidents';
   
   let body = JSON.stringify({
     'title': get_element_value('title'),
@@ -148,15 +153,16 @@ function postIncident(incidentType){
     return response.json();
   }).then(data => {
     if (data['status'] == 201){
-      let incident_id = data['data'][0]['id'];
-      return upload_images(incident_id);
+      let incident_id = data['data'][0]['id'];           
+      upload_images(incident_id);      
+      displayAlert();
     }
   }).then(response => {
-    console.log(response);
+    console.log(response);    
   })
   .catch(err => {
     console.log(err);
-  });  
+  });    
 }
 
 function upload_images(incident_id){  
@@ -165,7 +171,8 @@ function upload_images(incident_id){
     file = image_collection[i];
 
     form_data.append("image",file, file.name);
-    url ='http://127.0.0.1:5000/api/v1/incidents/' + incident_id + '/addImage?';
+    url ='https://knightedge.herokuapp.com/api/v1/incidents/' + incident_id + '/addImage?';
+    // url ='http://127.0.0.1:5000/api/v1/incidents/' + incident_id + '/addImage?';
 
     fetch(url, {
       method: 'patch',
@@ -193,23 +200,22 @@ function displayImages(files){
     var delete_cell = row.insertCell(1);
 
     file_name = file.name;
-
     name_cell.innerHTML = file_name;
     delete_cell.innerHTML =  '<a href="#">Delete</a>';
+
   }
 }
-
 
 
 function putIncident(){
   var url = '';
   if (incidentType == 'red-flag'){
-    // url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    url ='http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
+    url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
+    // url ='http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
   }
   if (incidentType == 'intervention'){
-    // url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
+    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
+    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
   }
   
   let body = JSON.stringify({
@@ -250,12 +256,12 @@ function getIncident(){
 
   var url = '';
   if (incidentType == 'red-flag'){
-    // url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
+    url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
+    // url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
   }
   if (incidentType == 'intervention'){
-    // url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
+    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
+    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
   }
 
   fetch(url,{
@@ -304,7 +310,7 @@ function check_passwords_match(){
 }
 
 function display_errors(data){
-  message_div = document.getElementById('messages');
+  message_div = get_element('messages');
   while (message_div.firstChild) {
     message_div.removeChild(message_div.firstChild);
   }
@@ -321,9 +327,14 @@ function display_errors(data){
   }
 }
 
+function displayAlert(){
+  alert = get_element('alert-box');
+  alert.style.display = "block";
+ }
+
 function navigate_to(page){
-  // window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
-  window.location.href = "http://localhost/iReporter/" + page ;
+  window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
+  // window.location.href = "http://localhost/iReporter/" + page ;
 }
 
 function set_cookie(data){
@@ -382,5 +393,38 @@ function update_dashboard(data, type) {
     get_element('pending-interventions').innerHTML = data['totals']['pending']['count'];
     get_element('rejected-interventions').innerHTML = data['totals']['rejected']['count'];
 
+  }  
   }
+
+  function validateIncident(){
+    title = get_element_value('title')
+    comment = get_element_value('comment')
+    error_box = get_element('error-box');
+
+    while (error_box.firstChild) {
+      error_box.style.display = "none";
+      error_box.removeChild(error_box.firstChild);
+    }
+
+    if(title == ''){      
+      error_box.style.display = "block";
+  
+      paragraph = document.createElement("P");
+      error = document.createTextNode('Please give a title');
+  
+      paragraph.appendChild(error); 
+      error_box.appendChild(paragraph);
+      return false;
+    }
+    if(comment == ''){      
+      error_box.style.display = "block";
+  
+      paragraph = document.createElement("P");
+      error = document.createTextNode('Please leave a comment');
+  
+      paragraph.appendChild(error); 
+      error_box.appendChild(paragraph);
+      return false;
+    }
+  return true;
 }
