@@ -7,6 +7,7 @@
 Installation
 ------------
 To access the api, browse to https://bisonlou.herokuapp.com/ using postman
+To access the app, browse to https://bisonlou.github.io/ireporter/UI/login.html
 
 Technology
 -------------
