@@ -15,7 +15,7 @@
 
 </head>
 
-<body onload="getIncidents();">
+<body onload="getIndexData();">
     <div class="bg-image">
         <header id="main-header">
             <div class="container">
@@ -24,7 +24,8 @@
                 </div>
                 <nav>
                     <ul>
-                        <li class="current"><a href="./index.html">Home</a></li>
+                        <li id="account-name"></li>
+                        <li id="sign-out"><a href="#">sign out</a></li>
                     </ul>
                 </nav>
             </div>           
@@ -103,7 +104,7 @@
     <div class="container">
         <div class="tables">
             <div class="redflag-table">
-                <label class="table-header red">Your red flags</label>
+                <label class="table-header red">My red flags</label>
                 <table id="redflag-table">
                     <thead>
                         <tr>
@@ -119,7 +120,7 @@
                 </table>
             </div>
             <div class="intervention-table">
-                <label class="table-header intervention">Your interventions</label>
+                <label class="table-header intervention">My interventions</label>
                 <table id="intervention-table">
                     <thead>
                         <tr>

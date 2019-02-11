@@ -1,11 +1,17 @@
-var image_collection
-
+var image_collection;
 
 function register(){
-  const url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
-  // const url = 'http://127.0.0.1:5000/api/v1/auth/signup';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/auth/signup';
+  const url = 'http://127.0.0.1:5000/api/v1/auth/signup';
+  required_fields = ['username', 'email', 'firstname', 'lastname', 'phonenumber', 'password'];
 
-  check_passwords_match();
+  if (validate_required(required_fields) > 0){
+    return
+  }
+
+  if (validate_passwords_match() == false){
+    return
+  }
 
   let headers = get_headers()
   let body = JSON.stringify({
@@ -28,7 +34,8 @@ function register(){
     return response.json();
   }).then(data => {
     if (data['status'] == 201){
-      navigate_to("login.html");      
+      set_cookie(data);
+      navigate_to("index.html");      
     }
     else {
       display_errors(data);
@@ -39,8 +46,14 @@ function register(){
 }
 
 function login(){
-  const url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
-  // const url = 'http://127.0.0.1:5000/api/v1/auth/login';
+
+  required_fields = ['email', 'password'];
+
+  if (validate_required(required_fields) > 0){
+    return
+  }
+  // const url = 'https://knightedge.herokuapp.com/api/v1/auth/login';
+  const url = 'http://127.0.0.1:5000/api/v1/auth/login';
 
   body = JSON.stringify({
     'email': get_element_value('email'),
@@ -54,10 +67,9 @@ function login(){
     })
   .then(response => {
     return response.json();
-
   }).then(data => {
     if (data['status'] == 200){
-      set_cookie(data);  
+      set_cookie(data);            
       navigate_to("index.html");
     }  
     else {
@@ -70,14 +82,35 @@ function login(){
   });
 }
 
-function getIncidents(){
+function getIndexData(){
+  displayUserName();
   getRedflags();
   getInterventions();
 }
 
+function displayUserName(){  
+  
+  // const url = 'https://knightedge.herokuapp.com/api/v1/auth/users';
+  const url = 'http://127.0.0.1:5000/api/v1/auth/users';
+
+  fetch(url, {
+    headers: get_headers()
+    })
+
+  .then(response => {
+    return response.json();
+  }).then(data => {
+    account_name = get_element('account-name');
+    account_name.innerHTML = "Logged in as " + data['data'][0]['username'];
+  
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
 function getRedflags(){
-  const url = 'https://knightedge.herokuapp.com/api/v1/redflags';
-  // const url = 'http://127.0.0.1:5000/api/v1/redflags';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/redflags';
+  const url = 'http://127.0.0.1:5000/api/v1/redflags';
 
   fetch(url, {
     headers: get_headers()
@@ -101,8 +134,8 @@ function getRedflags(){
 }
 
 function getInterventions(){
-  const url = 'https://knightedge.herokuapp.com/api/v1/interventions';
-  // const url = 'http://127.0.0.1:5000/api/v1/interventions';
+  // const url = 'https://knightedge.herokuapp.com/api/v1/interventions';
+  const url = 'http://127.0.0.1:5000/api/v1/interventions';
 
   fetch(url,{
     headers: get_headers()
@@ -133,8 +166,8 @@ function postIncident(incidentType){
     return
   }
 
-  url = 'https://knightedge.herokuapp.com/api/v1/incidents';
-  // url = 'http://127.0.0.1:5000/api/v1/incidents';
+  // url = 'https://knightedge.herokuapp.com/api/v1/incidents';
+  url = 'http://127.0.0.1:5000/api/v1/incidents';
   
   let body = JSON.stringify({
     'title': get_element_value('title'),
@@ -166,23 +199,26 @@ function postIncident(incidentType){
 }
 
 function upload_images(incident_id){  
-  for (i=0; i < image_collection.length; i++){
-    form_data = new FormData();
-    file = image_collection[i];
-
-    form_data.append("image",file, file.name);
-    url ='https://knightedge.herokuapp.com/api/v1/incidents/' + incident_id + '/addImage?';
-    // url ='http://127.0.0.1:5000/api/v1/incidents/' + incident_id + '/addImage?';
-
-    fetch(url, {
-      method: 'patch',
-      body: form_data,
-      headers: {
-        'Authorization': document.cookie
-          }
-      });
-  } 
-}
+  if (image_collection != null) {
+    for (i=0; i < image_collection.length; i++){
+      form_data = new FormData();
+      file = image_collection[i];
+  
+      form_data.append("image",file, file.name);
+      // url ='https://knightedge.herokuapp.com/api/v1/incidents/' + incident_id + '/addImage?';
+      url ='http://127.0.0.1:5000/api/v1/incidents/' + incident_id + '/addImage?';
+  
+      fetch(url, {
+        method: 'patch',
+        body: form_data,
+        headers: {
+          'Authorization': document.cookie
+            }
+        });
+      } 
+    }
+  }
+ 
 
 
 function displayImages(files){
@@ -208,28 +244,25 @@ function displayImages(files){
 
 
 function putIncident(){
-  var url = '';
-  if (incidentType == 'red-flag'){
-    url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    // url ='http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
-  }
-  if (incidentType == 'intervention'){
-    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
-  }
+  let current_url = window.location.href;
+  let incidentType = /type=([^&]+)/.exec(current_url)[1];
+  let incidentId = /id=([^&]+)/.exec(current_url)[1];
+  incidentId = parseInt(incidentId, 10)
+
+  // url = 'https://knightedge.herokuapp.com/api/v1/incidents/' + incidentId;
+  url ='http://127.0.0.1:5000/api/v1/incidents/' + incidentId;
+  
   
   let body = JSON.stringify({
     'title': get_element_value('title'),
     'comment': get_element_value('comment'),
     'location': '(00.000000, 00.000000)',
     'type': incidentType,
-    'status': 'pending',
-    'images': ['image_001.jpg'],
-    'videos': ['video_001.mp4']
+    'status': 'pending'
   })
 
   fetch(url, {
-    method: 'post',
+    method: 'put',
     body: body,
     headers: get_headers()
     })
@@ -237,8 +270,10 @@ function putIncident(){
   .then(response => {
     return response.json();
   }).then(data => {
-    if (data['status'] == 201){
-      navigate('index.html');
+    if (data['status'] == 200){
+      let incident_id = data['data'][0]['id'];           
+      upload_images(incident_id);      
+      displayAlert();
     }
   }).catch(err => {
     console.log(err);
@@ -256,12 +291,12 @@ function getIncident(){
 
   var url = '';
   if (incidentType == 'red-flag'){
-    url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
-    // url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/redflags/' + incidentId;
+    url = url = 'http://127.0.0.1:5000/api/v1/redflags/' + incidentId;
   }
   if (incidentType == 'intervention'){
-    url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
-    // url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
+    // url = 'https://knightedge.herokuapp.com/api/v1/interventions/' + incidentId;
+    url = 'http://127.0.0.1:5000/api/v1/interventions/' + incidentId;
   }
 
   fetch(url,{
@@ -272,12 +307,11 @@ function getIncident(){
   .then(response => {
     return response.json();
   }).then(data => {
-    if (data['status'] == 201){
-      navigate_to('index.html');
-    }
-
     title.value = data['data'][0]['title'];
     comment.innerHTML = data['data'][0]['comment'];
+
+    table = get_element('images-table')
+    populate_images_table(data, table)
 
   }).catch(err => {
     console.log(err);
@@ -310,20 +344,20 @@ function check_passwords_match(){
 }
 
 function display_errors(data){
-  message_div = get_element('messages');
-  while (message_div.firstChild) {
-    message_div.removeChild(message_div.firstChild);
+  error_box = get_element('error-box');
+  while (error_box.firstChild) {
+    error_box.style.display = "none";
+    error_box.removeChild(error_box.firstChild);
   }
-
   errors= data['errors'];
+  error_box.style.display = "block";
 
   for (i=0; i<errors.length; i++){
-    let paragraph = document.createElement("P");
-    paragraph.style = "color:red";
-    let error = document.createTextNode(errors[i]);
+    paragraph = document.createElement("P");
+    error = document.createTextNode(errors[i]);
 
     paragraph.appendChild(error); 
-    message_div.appendChild(paragraph);
+    error_box.appendChild(paragraph);
   }
 }
 
@@ -333,14 +367,27 @@ function displayAlert(){
  }
 
 function navigate_to(page){
-  window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
-  // window.location.href = "http://localhost/iReporter/" + page ;
+  // window.location.href = "https://bisonlou.github.io/ireporter/UI/" + page ;
+  window.location.href = "http://localhost/iReporter/" + page ;
 }
 
 function set_cookie(data){
   let token = data['data'][0]['access_token'];
   let bearer_token = "Bearer " + token + ";";
   document.cookie = "token=" + bearer_token;
+}
+
+function populate_images_table(data, table){
+  for(i=0; i< (data['data'][0]['images']).length; i++){
+    var row = table.insertRow(i);
+    
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+
+    cell1.innerHTML = data['data'][0]['images'][i];
+    cell2.innerHTML =  '<a href="#">Delete</a>';
+
+  }
 }
 
 function populate_incident_table(data, table, type){
@@ -427,4 +474,29 @@ function update_dashboard(data, type) {
       return false;
     }
   return true;
+}
+
+function validate_required(required_fields){
+  let empty_field_count = 0;
+  for (i = 0; i < required_fields.length; i++){
+    error_label = get_element(required_fields[i] + '-error')
+    element_value = get_element_value(required_fields[i])
+
+    if(element_value == ''){ 
+      empty_field_count+=1;
+      error_label.innerHTML = 'please fill this field';
+    }
+  }
+  return empty_field_count
+}
+
+function validate_passwords_match(){
+    password = get_element_value('password')
+    confirm_password = get_element_value('confirm_password')
+
+    if(confirm_password != password){ 
+      get_element('confirm_password-error').innerHTML = 'passwords don not match';
+      return flase
+    }
+  return true
 }

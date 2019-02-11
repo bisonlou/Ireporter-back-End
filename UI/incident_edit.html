@@ -45,15 +45,15 @@
             <div class="middle">
                 <p>Image evidence</p>
                 <input type="file">
-                <div class="media-table">
-                    <table>
+                <div class="media-table" >
+                    <table id="images-table">
 
                     </table>
                 </div>
             </div>
             <div class="right">
                 <p>Video evidence</p>
-                <input type="file">
+                <input type="file" disabled>
                 <div class="media-table">
                     <table>
 
@@ -63,7 +63,7 @@
         </div>
     </div>
     <div class="flag-box-submit">
-        <input type="submit" onclick="putIncidents()" value="Submit Changes">
+        <input type="submit" onclick="putIncident()" value="Submit Changes">
     </div>
     </div>
 

@@ -19,37 +19,31 @@
     <div class="container">
       <div class="register-box">
         <h1>Register</h1>
-          <div class="messages" id='messages' >
+        <div class="error-box" id="error-box">
           </div>
-          <hr>
+          <input type="text" id="username" required>
+          <p>Username <label class="error-label" id="username-error">*</label></p>
           
-          <p>Username<span style="color:red;"> *</span></p>
-          <input type="text" placeholder="Enter Username" id="username" required>
-
-          <p>Email<span style="color:red;"> *</span></p>
-          <input type="email" placeholder="Enter Email" id="email" required>          
+          <input type="email" id="email" required>
+          <p>Email  <label class="error-label" id="email-error">*</label></p>
+                    
+          <input type="text" id="firstname" required>
+          <p>First Name  <label class="error-label" id="firstname-error">*</label></p>
           
-          <p>First Name<span style="color:red;"> *</span></p>
-          <input type="text" placeholder="Enter first name" id="firstname" required>
-
-          <p>Last Name<span style="color:red;"> *</span></p>
-          <input type="text" placeholder="Enter last name" id="lastname" required>
-
+          <input type="text" id="lastname" required>
+          <p>Last Name  <label class="error-label" id="lastname-error">*</label></p>
+          
+          <input type="text" id="othernames">
           <p>Other Names</p>
-          <input type="text" placeholder="Enter other names" id="othernames">
-
-          <p>Phone number<span style="color:red;"> *</span></p>
-          <input type="tel" placeholder="Enter phone number" id="phonenumber" required>
-
-          <p>Password<span style="color:red;"> *</span></p>
-          <input type="password" placeholder="Enter Password" id="password" required>
-
-          <p>Repeat Password<span style="color:red;"> *</span></p>
-          <input type="password" placeholder="Repeat Password" id="confirm_password" required>
-
-          <br>
-        
-          <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
+          
+          <input type="tel" id="phonenumber" required>
+          <p>Phone number  <label class="error-label" id="phonenumber-error">*</label></p>
+          
+          <input type="password" id="password" required>
+          <p>Password  <label class="error-label" id="password-error">*</label></p>
+         
+          <input type="password" id="confirm_password" required>
+          <p>Repeat Password  <label class="error-label" id="confirm_password-error">*</label></p>         
 
           <div>
             <br>

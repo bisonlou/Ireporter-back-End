@@ -17,21 +17,27 @@
         <div class="black-box">
             <div class="welcome-box">
                 <h1>Welcome to <span class="highlight">i</span>Reporter</h1>
-                <p>Corruption is a huge bane to Africa’s development. Hence the birth of iReporter.</p>
+                <p>Corruption is a huge bane to Africa&#39;s development. Hence the birth of iReporter.</p>
                 <p>iReporter enables any citizen to bring any form of corruption to the notice of appropriate
                     authorities and the general public</p>
+                
+                <input type="submit" value="Get Started" onclick="navigate_to('register.html')">
 
             </div>
             <div class="login-box">               
-                <h1>Login</h1>
-                <div class="messages" id='messages'>
-                </div>
-                <p>Email</p>
-                <input type="email" placeholder="Email" id="email" />
-                <p>Password</p>
-                <input type="password" placeholder="Password" id="password" />
+                <h1>login</h1>
+
+                <div class="error-box" id="error-box">
+                    </div>
+
+                <input type="email" id="email" />
+                <p>Email <label class="error-label" id="email-error"></label></p>
+                
+                <input type="password" id="password" />
+                <p>Password <label class="error-label" id="password-error"></label></p>
+                
+
                 <input type="submit" value="Login" onclick="login()">
-                <a href="./register.html">Do not have an account?</a>
             </div>
         </div>
     </div>

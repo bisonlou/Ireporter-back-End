@@ -22,7 +22,7 @@ header{
 }
 
 header a{
-    color:#ffffff;
+    color: rgb(245, 146, 159);
     text-decoration: none;
     font-size: 14px;
 }
@@ -32,11 +32,11 @@ header ul{
     padding: 0;
 }
 
-header li{
+header ul li{
     display: inline;
-    border:1px solid #fff;
+    color: #ffffff;
     padding: 5px;
-    border-radius: 4px;
+    font-size: 16px
 }
 
 header #branding{
@@ -48,17 +48,11 @@ header #branding h1{
 }
 
 header nav{
-    float:right;    
-    margin-top:-30px;
+    float:right;
 }
 
 .highlight {
     color:#3ECCB5;
-}
-
-header li:hover {
-    color:red;
-    opacity: 0.9;
 }
 
 
@@ -110,12 +104,24 @@ table th {
   }
 
   /* custom */
+
+  .error-label {
+      font-style: italic;
+      color: crimson;
+  }
   .alert-box {
       background-color: teal;
       display: none;
       width: 80%;
       height: 40px;
       margin:auto;
+  }
+
+  .error-box {
+    background-color: crimson;
+    display: none;    
+    width: 80%;
+    margin:auto;
   }
 
   .alert-box p, .error-box p{
@@ -125,13 +131,6 @@ table th {
       line-height: 1.8em;
   }
 
-  .error-box {
-    background-color: crimson;
-    display: none;    
-    width: 80%;
-    height: 40px;
-    margin:auto;
-  }
 
 .tables td a{
     color: lightseagreen;
@@ -139,7 +138,7 @@ table th {
 
 .table-header{
     display:block;
-    width:100%;
+    width:95%;
     font-size: 20px;
     font-weight: 300;
     padding: 5px;
@@ -163,10 +162,10 @@ table th {
     margin-top: 100px;
     padding:40px 20px;    
     background:#000;    
-    opacity: 0.7;
+    opacity: 0.9;
     width:80%;
     height:320px;    
-    color:#fff; 
+    color:burlywood; 
 }
 
 .welcome-box {
@@ -178,11 +177,25 @@ table th {
 }
 
 .welcome-box p {
+    font-family: Cochin, Georgia, Times, 'Times New Roman', serif;
+
     margin:0px;
     padding: 0px;   
-    line-height: 1.8em;
-    font-size:14px;
+    line-height: 2.0em;
+    font-size:16px;
     font-weight: 100;    
+}
+
+.welcome-box input[type=submit] {
+    border-radius: 4px;
+    width : 40%;
+    outline:none;
+    margin-top:40px;
+    padding: 15px;
+    font-size: 16px;
+    color: white;
+    background: crimson;
+    border: none;
 }
 
 
@@ -191,7 +204,7 @@ table th {
     width:30%;
     height:320px;
     padding-left: 20px;
-    border-left: 1px solid #fff;
+    border-left: 1px solid burlywood;
       
 }
 
@@ -210,22 +223,22 @@ table th {
     font-weight: 100;
 }
 
-.login-box input, .welcome-box input {
+.login-box input {
     width:100%; 
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     outline:none;
     border:none;    
     height: 40px;
     font-size: 14px;
-    color:#fff;
-    border-bottom: 1px solid #fff;
+    color: burlywood;
+    border-bottom: 1px solid burlywood;
     background: transparent;
 }
 
 
-.register-box input[type=submit], .login-box input[type=submit],
-.welcome-box input[type=submit] {
+.register-box input[type=submit], .login-box input[type=submit]{
     border-radius: 22px;
+    margin-top: 30px;
     padding: 10px;
     font-size: 16px;
     background: rgb(22, 119, 103);
@@ -236,15 +249,17 @@ table th {
 
 .register-box {
     margin: auto;
+    margin-top: 20px;
     padding:10px 20px;    
     background:#000;    
-    opacity: 0.7;
-    width:40%;
+    opacity: 0.9;
+    width:35%;
     color:#fff;    
 }
 .register-box h1 {
     margin:0px;
     padding: 0px;
+    color: burlywood;
     margin-bottom: 10px;
     text-align: center;
     font-size: 20px;
@@ -255,24 +270,26 @@ table th {
     padding: 0px;   
     font-size:13px;
     font-weight: 100;
+    color: teal;
 }
 
 .register-box input {
     width:100%; 
     outline:none;
     border:none;
-    color:#fff;
+    color: burlywood;
     font-size: 14px;
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid burlywood;
     background: transparent;
 }
 
 .register-box input[type=submit] {
+    color: white;
     height: 40px;
 }
 
-.register-box a, .login-box a {
-    color: darkgray;
+.login-box a {
+    color: burlywood;
 }
 
 
@@ -346,7 +363,7 @@ border-spacing: 0px;
 
 .intervention-table {
     float: right;
-    width:50%;
+    width:45%;
     min-height: 200px;
   }
 
